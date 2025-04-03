@@ -56,3 +56,5 @@ object via the Name Server.
 </p>
 
 ### Tests cases & Validations
+
+## How to run:
