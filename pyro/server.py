@@ -8,7 +8,10 @@ class InsultService:
     
     @Pyro4.expose
     def add_insult(self, insult):
-        self.insults.append(insult)
+        if insult not in self.insults:
+            self.insults.append(insult)
+        else:
+            return "Insulto ya registrado"
         # Notificar a cada suscriptor sobre el nuevo insulto
         for subscriber_url in self.subscribers:
             try:
@@ -19,6 +22,10 @@ class InsultService:
                 print(f"Error al notificar al suscriptor {subscriber_url}: {e}")
         return "Insulto registrado: " + insult
     
+    @Pyro4.expose
+    def get_insults(self):
+        return self.insults
+
     
 # Configurar el servidor
 daemon = Pyro4.Daemon()  # Crear instancia del servidor
@@ -29,7 +36,7 @@ insultService = InsultService()
 
 # Registrar el objeto en Pyro4
 uri = daemon.register(insultService)
-name_server.register("example.remote.object", uri)
+name_server.register("insultservice.remote.object", uri)
 
 print(f"Server with URI {uri} in execution...")
 daemon.requestLoop()  # Mantener el servidor en ejecución
