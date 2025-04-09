@@ -16,7 +16,7 @@ def main():
         server = Proxy("PYRO:InsultService@localhost:4718")
 
         # Añadir insulto
-        result = server.add_insult("stupid")
+        result = server.add_insult("asshole")
         print("Resultado al añadir insulto:", result)
 
         # Suscribirse al broadcasting

@@ -1,6 +1,10 @@
 import Pyro4
+import random
+import threading
+import time
 
 # Definir la clase correctamente y exponerla
+@Pyro4.behavior(instance_mode="single")
 class InsultService:
     def __init__(self):
         self.insults = []         # Lista de insultos
@@ -25,18 +29,52 @@ class InsultService:
     @Pyro4.expose
     def get_insults(self):
         return self.insults
-
     
-# Configurar el servidor
-daemon = Pyro4.Daemon()  # Crear instancia del servidor
-name_server = Pyro4.locateNS()  # Localizar el Name Server
+    @Pyro4.expose
+    def subscribe(self, subscriber_uri):
+        if (subscriber_uri not in self.subscribers):
+            self.subscribers.append(subscriber_uri)
+            print("Suscriptor registrado")
+        else:
+            print("Suscriptor ya registrado")
 
-# Crear una instancia de la clase correctamente
-insultService = InsultService()
+    @Pyro4.expose
+    def unsubscribe(self, subscriber_uri):
+        self.subscribers.remove(subscriber_uri)
+        print(f"Unsubscribed {subscriber_uri}")
+    
+    def get_random_insult(self):        
+        return random.choice(self.insults) if self.insults else None
+    
+    def broadcast_loop(self):
+        while True:
+            print("⏳ Revisando...")
+            if self.insults and self.subscribers:
+                insult = random.choice(self.insults)
+                for uri in self.subscribers:
+                    try:
+                        proxy = Pyro4.Proxy(uri)
+                        proxy.update(insult)
+                        print("📤 Enviado a:", uri)
+                    except Exception as e:
+                        print("❌ Error al enviar a", uri, ":", e)
+            time.sleep(5)
 
-# Registrar el objeto en Pyro4
-uri = daemon.register(insultService)
-name_server.register("insultservice.remote.object", uri)
 
-print(f"Server with URI {uri} in execution...")
-daemon.requestLoop()  # Mantener el servidor en ejecución
+
+# Ejecutar el servidor
+def main():
+    # Configurar el servidor
+    daemon = Pyro4.Daemon(port=4718)
+    obj = InsultService()
+    uri = daemon.register(obj, objectId="InsultService")
+    
+    # Iniciar broadcasting en hilo separado
+    obj = daemon.objectsById["InsultService"]
+    threading.Thread(target=obj.broadcast_loop, daemon=True).start()
+
+    print(f"InsultService with URI {uri} in execution...")
+    daemon.requestLoop() # Mantener el servidor en ejecución
+
+if __name__ == "__main__":
+    main()
