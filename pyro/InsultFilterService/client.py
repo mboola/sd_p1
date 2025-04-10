@@ -3,10 +3,14 @@ from Pyro4 import Proxy
 # Conectar con el servidor
 remote = Proxy("PYRO:InsultFilterService@localhost:4040")
 
-# Enviar texto a filtrar
+# Enviar texto y insulto:
 text = "hola"
 filtered = remote.add_text(text)
-print("Texto filtrado:", filtered)
+print("Texto filtrado: ", filtered)
+
+text = "idiota"
+filtered = remote.add_text(text)
+print("Texto filtrado: ", filtered)
 
 # Obtener todos los resultados filtrados
 results = remote.get_texts()

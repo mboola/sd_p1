@@ -15,8 +15,8 @@ class InsultFilterService:
         "boluda", "gila", "zorra", "infeliz", "payasa", "chiflado", "mamerto",
         "mamón", "baboso", "capulla", "lameculos", "chupamedias", "soplapollas",
         "come mierda", "come mocos", "tarambana", "tarugo", "majadero", "chingaquedito"]  # Insultos a filtrar
-        self.filtered_texts = [] # Resultados filtrados
-        self.subscribers = []  # Lista de URLs de suscriptores
+        self.filtered_texts = []    # Resultados filtrados
+        self.subscribers = []       # Lista de URLs de suscriptores
 
     @Pyro4.expose
     def add_text(self, string):
