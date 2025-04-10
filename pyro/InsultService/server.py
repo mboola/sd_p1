@@ -21,7 +21,7 @@ class InsultService:
             try:
                 print(subscriber_url)
                 proxy = Pyro4.Proxy(subscriber_url)  # Crear un proxy para el suscriptor
-                proxy.notify(insult)  # Llamar al método notify del suscriptor
+                proxy.update(insult)  # Llamar al método notify del suscriptor
             except Exception as e:
                 print(f"Error al notificar al suscriptor {subscriber_url}: {e}")
         return "Insulto registrado: " + insult
