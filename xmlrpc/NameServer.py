@@ -10,17 +10,17 @@ from xmlrpc.server import SimpleXMLRPCRequestHandler
 class RequestHandler(SimpleXMLRPCRequestHandler):
 	rpc_paths = ('/RPC2',)
 
-insult_service_workers = []
-insult_filter_service_workers = []
-insult_storage_node = ""
-insult_publisher_node = ""
-raw_text_storage_node = ""
-censored_text_storage_node = ""
-publisher_node = ""
-
 # Create server
 with SimpleXMLRPCServer(('localhost', 8000),
 						requestHandler = RequestHandler) as name_server:
+
+	insult_service_workers = []
+	insult_filter_service_workers = []
+	insult_storage_node = ""
+	insult_publisher_node = ""
+	raw_text_storage_node = ''
+	censored_text_storage_node = ''
+	publisher_node = ""
 
 	def add_insult_worker(worker):
 		# TODO : check if worker is inside insult_service_workers.
@@ -73,10 +73,12 @@ with SimpleXMLRPCServer(('localhost', 8000),
 	
 	def add_raw_text_storage_node(raw_text_storage):
 		raw_text_storage_node = raw_text_storage
+		print(raw_text_storage_node)
 		return "Raw text storage added correctly!"
 	name_server.register_function(add_raw_text_storage_node)
 
 	def get_raw_text_storage_node():
+		print(raw_text_storage_node)
 		return raw_text_storage_node
 	name_server.register_function(get_raw_text_storage_node)
 
@@ -89,5 +91,7 @@ with SimpleXMLRPCServer(('localhost', 8000),
 		return censored_text_storage_node
 	name_server.register_function(get_censored_text_storage_node)
 
+	print("Name server started!")
+
 	# Run the server's main loop
-	server.serve_forever()
+	name_server.serve_forever()

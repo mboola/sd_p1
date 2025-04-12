@@ -12,7 +12,6 @@ from xmlrpc.server import SimpleXMLRPCRequestHandler
 class RequestHandler(SimpleXMLRPCRequestHandler):
 	rpc_paths = ('/RPC2',)
 
-
 # If there is a port inputed as a parameter
 if len(sys.argv) > 1:
 

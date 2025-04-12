@@ -4,14 +4,13 @@
 
 import sys
 import time
-
+import xmlrpc.client
 from xmlrpc.server import SimpleXMLRPCServer
 from xmlrpc.server import SimpleXMLRPCRequestHandler
 
 # Restrict to a particular path
 class RequestHandler(SimpleXMLRPCRequestHandler):
 	rpc_paths = ('/RPC2',)
-
 
 # If there is a port inputed as a parameter
 if len(sys.argv) > 1:
@@ -31,11 +30,14 @@ if len(sys.argv) > 1:
 		name_server = xmlrpc.client.ServerProxy("http://localhost:8000")
 		name_server.add_insult_filter_worker("http://localhost:" + sys.argv[1])
 		
-		raw_text_storage = name_server.get_raw_text_storage_node()
-		raw_text_storage_server = xmlrpc.client.ServerProxy(raw_text_storage)
+		raw_text_storage_uri = name_server.get_raw_text_storage_node()
+		print(f"Raw Text URI:, {raw_text_storage_uri}!")
+		raw_text_storage_server = xmlrpc.client.ServerProxy(raw_text_storage_uri)
 
-		censored_text_storage = name_server.get_censored_text_storage_node()
-		censored_text_storage_server = xmlrpc.client.ServerProxy(censored_text_storage)
+		censored_text_storage_uri = name_server.get_censored_text_storage_node()
+		censored_text_storage_server = xmlrpc.client.ServerProxy(censored_text_storage_uri)
+
+		print("Insult Filter Service started!")
 
 		while True:
 			text = raw_text_storage_server.get_text_to_filter()
@@ -44,4 +46,3 @@ if len(sys.argv) > 1:
 					text = re.sub(insult, "CENSORED", text, flags=re.IGNORECASE)
 				censored_text_storage_server.add_censored_text(text)
 			time.sleep(1)
-
