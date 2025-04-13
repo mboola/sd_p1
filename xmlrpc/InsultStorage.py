@@ -2,7 +2,7 @@
 
 #
 import time
-
+import xmlrpc.client
 from xmlrpc.server import SimpleXMLRPCServer
 from xmlrpc.server import SimpleXMLRPCRequestHandler
 
@@ -24,6 +24,7 @@ with SimpleXMLRPCServer(('localhost', 8003),
 			if insult not in last_updated_insults:
 				if insult not in new_insults:
 					new_insults.append(insult)
+					print(f"Added insult '{insult}' to new insults!")
 		new_list = last_updated_insults
 		new_list.append(new_insults)
 		return new_list
@@ -39,12 +40,15 @@ with SimpleXMLRPCServer(('localhost', 8003),
 	name_server = xmlrpc.client.ServerProxy("http://localhost:8000")
 	name_server.add_insult_storage_node("http://localhost:8003")
 
-	publisher_storage_uri = name_server.get_insult_publisher_node()
-	publisher_storage = xmlrpc.client.ServerProxy(publisher_storage_uri)
+	insult_publisher_uri = name_server.get_insult_publisher_node()
+	insult_publisher = xmlrpc.client.ServerProxy(insult_publisher_uri)
+	
+	print("Insult Storage running in http://localhost:8003!")
 
 	while True:
-		if ! new_insults.isEmpty():
-			publisher_storage.update_insults(new_insults)
+		if not new_insults:
+			insult_publisher.update_insults(new_insults)
 			last_updated_insults.append(new_insults)
 			new_insults = []
+			print(f"Added '{new_insults}' insult_publisher!")
 		time.sleep(5)

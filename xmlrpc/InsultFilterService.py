@@ -16,6 +16,7 @@ class RequestHandler(SimpleXMLRPCRequestHandler):
 if len(sys.argv) > 1:
 
 	my_insults = []
+	awake = False
 
 	# Create observer server
 	with SimpleXMLRPCServer(('localhost', int(sys.argv[1])),
@@ -23,26 +24,35 @@ if len(sys.argv) > 1:
 
 		def update_insult_list(insults):
 			my_insults = insults
+			print(f"New list of insults '{my_insults}'")
 			return "List updated!"
 		insult_filter.register_function(update_insult_list)
+
+		def awake():
+			awake = True
+			return ""
+		insult_filter.register_function(awake)
 
 		# Getting server in "http://localhost:8000"
 		name_server = xmlrpc.client.ServerProxy("http://localhost:8000")
 		name_server.add_insult_filter_worker("http://localhost:" + sys.argv[1])
 		
 		raw_text_storage_uri = name_server.get_raw_text_storage_node()
-		print(f"Raw Text URI:, {raw_text_storage_uri}!")
+		print(f"Raw Text URI: {raw_text_storage_uri}!")
 		raw_text_storage_server = xmlrpc.client.ServerProxy(raw_text_storage_uri)
 
 		censored_text_storage_uri = name_server.get_censored_text_storage_node()
+		print(f"Raw Text URI: {censored_text_storage_uri}!")
 		censored_text_storage_server = xmlrpc.client.ServerProxy(censored_text_storage_uri)
 
-		print("Insult Filter Service started!")
+		print("Insult Filter Service running in http://localhost:" + sys.argv[1] + "!")
 
 		while True:
-			text = raw_text_storage_server.get_text_to_filter()
-			if text != "":
-				for insult in my_insults:
-					text = re.sub(insult, "CENSORED", text, flags=re.IGNORECASE)
-				censored_text_storage_server.add_censored_text(text)
-			time.sleep(1)
+			if awake:
+				text = raw_text_storage_server.get_text_to_filter()
+				if text != "":
+					for insult in my_insults:
+						text = re.sub(insult, "CENSORED", text, flags=re.IGNORECASE)
+					censored_text_storage_server.add_censored_text(text)
+				else:
+					awake = False

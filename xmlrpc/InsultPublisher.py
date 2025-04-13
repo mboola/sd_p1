@@ -2,7 +2,7 @@
 
 #
 import time
-
+import xmlrpc.client
 from xmlrpc.server import SimpleXMLRPCServer
 from xmlrpc.server import SimpleXMLRPCRequestHandler
 
@@ -13,31 +13,38 @@ class RequestHandler(SimpleXMLRPCRequestHandler):
 my_insults = []
 insult_filters = []
 update = False
+notify = False
 
 # Create observer server
 with SimpleXMLRPCServer(('localhost', 8006),
-						requestHandler = RequestHandler) as storage_publisher:
+						requestHandler = RequestHandler) as insult_publisher:
 
 	def update_insults(insults):
 		my_insults.append(insults)
 		update = True
 		return "New insults appended correctly!"
-	storage_publisher.register_function(update_insults)
+	insult_publisher.register_function(update_insults)
 
+	def notify_filter_services():
+		notify = True
+		return ""
+	insult_publisher.register_function(notify_filter_services)
 
 	# Getting server in "http://localhost:8000"
 	name_server = xmlrpc.client.ServerProxy("http://localhost:8000")
 	name_server.add_insult_publisher_node("http://localhost:8006")
-
-	publisher_storage_uri = name_server.get_insult_publisher_node()
-	publisher_storage = xmlrpc.client.ServerProxy(publisher_storage_uri)
-
+	
 	insult_filters = name_server.get_insult_filter_workers()
+	
+	print("Storage Publisher running in http://localhost:8006!")
 
 	while True:
-		if update:
+		if update or notify:
 			for insult_filter_worker_uri in insult_filters:
 				insult_filter_worker = xmlrpc.client.ServerProxy(insult_filter_worker_uri)
-				insult_filter_worker.update_insult_list(my_insults)
+				if update:
+					insult_filter_worker.update_insult_list(my_insults)
+				else:
+					insult_filter_worker.awake()
 			update = False
 		time.sleep(5)

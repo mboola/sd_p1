@@ -18,6 +18,7 @@ with SimpleXMLRPCServer(('localhost', 8004),
 
 	def add_censored_text(text):
 		censored_texts.append(text)
+		print(f"Added '{text}' to Censored Text Storage!")
 		return "Censored text added correctly!"
 	censored_text_storage.register_function(add_censored_text)
 

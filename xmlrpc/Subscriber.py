@@ -4,7 +4,7 @@
 
 import sys
 import time
-
+import xmlrpc.client
 from xmlrpc.server import SimpleXMLRPCServer
 from xmlrpc.server import SimpleXMLRPCRequestHandler
 
@@ -29,10 +29,12 @@ if len(sys.argv) > 1:
 		# Getting server in "http://localhost:8000"
 		name_server = xmlrpc.client.ServerProxy("http://localhost:8000")
 
-        publisher_uri = name_server.get_publisher_node()
-        publisher = xmlrpc.client.ServerProxy(publisher_uri)
-        publisher.register_subscriber("http://localhost:" + sys.argv[1])
+		publisher_uri = name_server.get_event_publisher_node()
+		publisher = xmlrpc.client.ServerProxy(publisher_uri)
+		publisher.register_subscriber("http://localhost:" + sys.argv[1])
+
+		print("Subscriber running in http://localhost:" + sys.argv[1] + "!")
 
 		# Run the server's main loop
-	    subscriber.serve_forever()
+		subscriber.serve_forever()
 
