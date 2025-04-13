@@ -4,6 +4,7 @@
 
 import sys
 import time
+import threading
 import xmlrpc.client
 from xmlrpc.server import SimpleXMLRPCServer
 from xmlrpc.server import SimpleXMLRPCRequestHandler
@@ -18,7 +19,20 @@ if len(sys.argv) > 1:
 	last_updated_insults = []
 	new_insults = []
 
-	storage_node_uri = ""
+	def update_insults(insult_storage):
+		global last_updated_insults
+		global new_insults
+		while True:
+			updated_insults = insult_storage.update_insults(new_insults)
+			print(f"New insults '{updated_insults}'!")
+			last_updated_insults.append(new_insults)
+			print(f"Added insult '{new_insults}' to last_updated_insults!")
+			new_insults = []
+			for insult in updated_insults:
+				if insult not in last_updated_insults:
+					last_updated_insults.append(insult)
+					print(f"Added insult '{insult}' to last_updated_insults!")
+			time.sleep(3)
 
 	# Create observer server
 	with SimpleXMLRPCServer(('localhost', int(sys.argv[1])),
@@ -32,12 +46,6 @@ if len(sys.argv) > 1:
 			return "List updated!"
 		insult_service.register_function(add_insult)
 
-		def get_insults():
-			new_list = last_updated_insults
-			new_list.append(new_insults)
-			return new_list
-		insult_service.register_function(get_insults)
-
 		# Getting server in "http://localhost:8000"
 		name_server = xmlrpc.client.ServerProxy("http://localhost:8000")
 		name_server.add_insult_worker("http://localhost:" + sys.argv[1])
@@ -47,13 +55,7 @@ if len(sys.argv) > 1:
 
 		print("Insult Service running in http://localhost:" + sys.argv[1] + "!")
 
-		while True:
-			updated_insults = insult_storage.update_insults(new_insults)
-			last_updated_insults.append(new_insults)
-			print(f"Added insult '{new_insults}' to last_updated_insults!")
-			new_insults = []
-			for insult in updated_insults:
-				if insult not in last_updated_insults:
-					last_updated_insults.append(insult)
-					print(f"Added insult '{insult}' to last_updated_insults!")
-			time.sleep(3)
+		thread = threading.Thread(target=update_insults, args=(insult_storage,), daemon=True)
+		thread.start()
+
+		insult_service.serve_forever()

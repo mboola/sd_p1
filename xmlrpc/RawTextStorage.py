@@ -4,7 +4,8 @@
 
 import queue
 import xmlrpc.client
-
+import threading
+import time
 from xmlrpc.server import SimpleXMLRPCServer
 from xmlrpc.server import SimpleXMLRPCRequestHandler
 
@@ -16,11 +17,20 @@ text_to_censor = queue.Queue()
 
 petitions = False
 
+def notify_petitions(insult_publisher):
+	global petitions
+	while True:
+		time.sleep(5)
+		if petitions:
+			insult_publisher.notify_filter_services()
+			petitions = False
+
 # Create server
 with SimpleXMLRPCServer(('localhost', 8002),
 						requestHandler = RequestHandler) as raw_text_storage:
 
 	def add_text_to_filter(text):
+		global petitions
 		petitions = True
 		print(f"Text to filter added: {text}!")
 		text_to_censor.put(text)
@@ -42,12 +52,10 @@ with SimpleXMLRPCServer(('localhost', 8002),
 
 	print("Name Server running in http://localhost:8002!")
 
+	thread = threading.Thread(target=notify_petitions, args=(insult_publisher,), daemon=True)
+	thread.start()
+
 	# Run the server's main loop
 	raw_text_storage.serve_forever()
 
-	while True:
-		time.sleep(5)
-		if petitions:
-			insult_publisher.notify_filter_services()
-			petitions = False
 

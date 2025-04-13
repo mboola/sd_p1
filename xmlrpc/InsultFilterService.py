@@ -5,6 +5,7 @@
 import sys
 import time
 import xmlrpc.client
+import threading
 from xmlrpc.server import SimpleXMLRPCServer
 from xmlrpc.server import SimpleXMLRPCRequestHandler
 
@@ -18,17 +19,31 @@ if len(sys.argv) > 1:
 	my_insults = []
 	awake = False
 
+	def filter_texts(raw_text_storage_server, censored_text_storage_server):
+		global awake
+		while True:
+			if awake:
+				text = raw_text_storage_server.get_text_to_filter()
+				if text != "":
+					for insult in my_insults:
+						text = re.sub(insult, "CENSORED", text, flags=re.IGNORECASE)
+					censored_text_storage_server.add_censored_text(text)
+				else:
+					awake = False
+
 	# Create observer server
 	with SimpleXMLRPCServer(('localhost', int(sys.argv[1])),
 							requestHandler = RequestHandler) as insult_filter:
 
 		def update_insult_list(insults):
+			global my_insults
 			my_insults = insults
 			print(f"New list of insults '{my_insults}'")
 			return "List updated!"
 		insult_filter.register_function(update_insult_list)
 
 		def awake():
+			global awake
 			awake = True
 			return ""
 		insult_filter.register_function(awake)
@@ -47,12 +62,7 @@ if len(sys.argv) > 1:
 
 		print("Insult Filter Service running in http://localhost:" + sys.argv[1] + "!")
 
-		while True:
-			if awake:
-				text = raw_text_storage_server.get_text_to_filter()
-				if text != "":
-					for insult in my_insults:
-						text = re.sub(insult, "CENSORED", text, flags=re.IGNORECASE)
-					censored_text_storage_server.add_censored_text(text)
-				else:
-					awake = False
+		thread = threading.Thread(target=filter_texts, args=(raw_text_storage_server, censored_text_storage_server,), daemon=True)
+		thread.start()
+
+		insult_filter.serve_forever()

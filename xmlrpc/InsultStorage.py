@@ -3,6 +3,7 @@
 #
 import time
 import xmlrpc.client
+import threading
 from xmlrpc.server import SimpleXMLRPCServer
 from xmlrpc.server import SimpleXMLRPCRequestHandler
 
@@ -13,24 +14,38 @@ class RequestHandler(SimpleXMLRPCRequestHandler):
 last_updated_insults = []
 new_insults = []
 
-publisher_storage_uri = ""
+def notify_insults(insult_publisher):
+	global new_insults
+	while True:
+		if new_insults:
+			insult_publisher.update_insults(new_insults)
+			last_updated_insults.append(new_insults)
+			print(f"Added '{new_insults}' insult_publisher!")
+			new_insults = []
+		time.sleep(5)
 
 # Create observer server
 with SimpleXMLRPCServer(('localhost', 8003),
 						requestHandler = RequestHandler) as insult_storage:
 
 	def update_insults(insults):
-		for insult in insults:
-			if insult not in last_updated_insults:
-				if insult not in new_insults:
-					new_insults.append(insult)
-					print(f"Added insult '{insult}' to new insults!")
-		new_list = last_updated_insults
-		new_list.append(new_insults)
-		return new_list
+		global last_updated_insults
+		global new_insults
+		print(f"Insults: '{insults}'!")
+		if insults:
+			for insult in insults:
+				if insult not in last_updated_insults:
+					if insult not in new_insults:
+						new_insults.append(insult)
+						print(f"Added insult '{insult}' to new insults!")
+			new_list = last_updated_insults
+			new_list.append(new_insults)
+			return new_list
+		return last_updated_insults
 	insult_storage.register_function(update_insults)
 
 	def get_insults():
+		global last_updated_insults
 		new_list = last_updated_insults
 		new_list.append(new_insults)
 		return new_list
@@ -45,10 +60,7 @@ with SimpleXMLRPCServer(('localhost', 8003),
 	
 	print("Insult Storage running in http://localhost:8003!")
 
-	while True:
-		if not new_insults:
-			insult_publisher.update_insults(new_insults)
-			last_updated_insults.append(new_insults)
-			new_insults = []
-			print(f"Added '{new_insults}' insult_publisher!")
-		time.sleep(5)
+	thread = threading.Thread(target=notify_insults, args=(insult_publisher,), daemon=True)
+	thread.start()
+
+	insult_storage.serve_forever()

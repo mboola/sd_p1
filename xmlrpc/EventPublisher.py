@@ -16,7 +16,6 @@ subscribers = []
 
 def notify_subscribers(insult_storage):
 	while True:
-		time.sleep(5)
 		# TODO : change this
 		insults = ["bobo", "tonto"]#insult_storage.get_insults()
 		random_insult = random.choice(insults)
@@ -24,6 +23,7 @@ def notify_subscribers(insult_storage):
 			print(f"Notifying insult '{random_insult}' to subscriber URI '{subscriber_uri}'!")
 			subscriber = xmlrpc.client.ServerProxy(subscriber_uri)
 			subscriber.notify(random_insult)
+		time.sleep(5)
 
 # Create observer server
 with SimpleXMLRPCServer(('localhost', 8005),
