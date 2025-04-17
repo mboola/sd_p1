@@ -19,8 +19,10 @@ def notify_insults(insult_publisher):
 	while True:
 		if new_insults:
 			insult_publisher.update_insults(new_insults)
-			last_updated_insults.append(new_insults)
-			print(f"Added '{new_insults}' insult_publisher!")
+			for insult in new_insults:
+				if insult not in last_updated_insults:
+					last_updated_insults.append(insult)
+					print(f"Added '{insult}' insult_publisher!")
 			new_insults = []
 		time.sleep(5)
 
@@ -39,7 +41,8 @@ with SimpleXMLRPCServer(('localhost', 8003),
 						new_insults.append(insult)
 						print(f"Added insult '{insult}' to new insults!")
 			new_list = last_updated_insults
-			new_list.append(new_insults)
+			for insult in new_insults:
+				new_list.append(insult)
 			return new_list
 		return last_updated_insults
 	insult_storage.register_function(update_insults)
@@ -47,7 +50,8 @@ with SimpleXMLRPCServer(('localhost', 8003),
 	def get_insults():
 		global last_updated_insults
 		new_list = last_updated_insults
-		new_list.append(new_insults)
+		for insult in new_insults:
+			new_list.append(insult)
 		return new_list
 	insult_storage.register_function(get_insults)
 

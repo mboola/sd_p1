@@ -25,9 +25,11 @@ if len(sys.argv) > 1:
 		while True:
 			updated_insults = insult_storage.update_insults(new_insults)
 			print(f"New insults '{updated_insults}'!")
-			last_updated_insults.append(new_insults)
-			print(f"Added insult '{new_insults}' to last_updated_insults!")
-			new_insults = []
+			if new_insults:
+				for insult in new_insults:
+					last_updated_insults.append(insult)
+				print(f"Added insult '{new_insults}' to last_updated_insults!")
+				new_insults = []
 			for insult in updated_insults:
 				if insult not in last_updated_insults:
 					last_updated_insults.append(insult)

@@ -1,4 +1,5 @@
 import xmlrpc.client
+import time
 
 # Getting server in "http://localhost:8000"
 name_server = xmlrpc.client.ServerProxy('http://localhost:8000')
@@ -13,3 +14,4 @@ for i in range(3):
 		print(f"Adding '{insults[i]}' to Insult Service URI '{insult_service_worker_uri}'!")
 		insult_service_worker = xmlrpc.client.ServerProxy(insult_service_worker_uri)
 		print(insult_service_worker.add_insult(insults[i]))
+		time.sleep(1)

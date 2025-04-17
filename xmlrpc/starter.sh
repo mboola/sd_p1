@@ -41,6 +41,9 @@ sleep 1
 gnome-terminal --title="Subscriber 1" -- bash -c "python3 Subscriber.py 8011" &
 gnome-terminal --title="Subscriber 2" -- bash -c "python3 Subscriber.py 8012" &
 
+# Wait some time so Subscribers can start correctly
+sleep 1
+
 # Open new terminal with 1 .. n Insult Service
 gnome-terminal --title="Insult Service 1" -- bash -c "python3 InsultService.py 8013" &
 
