@@ -16,13 +16,13 @@ subscribers = []
 
 def notify_subscribers(insult_storage):
 	while True:
-		# TODO : change this
-		insults = ["bobo", "tonto"]#insult_storage.get_insults()
-		random_insult = random.choice(insults)
-		for subscriber_uri in subscribers:
-			print(f"Notifying insult '{random_insult}' to subscriber URI '{subscriber_uri}'!")
-			subscriber = xmlrpc.client.ServerProxy(subscriber_uri)
-			subscriber.notify(random_insult)
+		insults = insult_storage.get_insults()
+		if insults:
+			random_insult = random.choice(insults)
+			for subscriber_uri in subscribers:
+				print(f"Notifying insult '{random_insult}' to subscriber URI '{subscriber_uri}'!")
+				subscriber = xmlrpc.client.ServerProxy(subscriber_uri)
+				subscriber.notify(random_insult)
 		time.sleep(5)
 
 # Create observer server
