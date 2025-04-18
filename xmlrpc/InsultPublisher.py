@@ -21,6 +21,7 @@ def update_insult_filters():
 	global notify
 	while True:
 		if update or notify:
+			print("Notifing!")
 			for insult_filter_worker_uri in insult_filters:
 				insult_filter_worker = xmlrpc.client.ServerProxy(insult_filter_worker_uri)
 				if update:
@@ -42,6 +43,8 @@ with SimpleXMLRPCServer(('localhost', 8006),
 	insult_publisher.register_function(update_insults)
 
 	def notify_filter_services():
+		global notify
+		print("Notified!")
 		notify = True
 		return ""
 	insult_publisher.register_function(notify_filter_services)

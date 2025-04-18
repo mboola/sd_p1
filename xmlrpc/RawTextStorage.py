@@ -17,13 +17,16 @@ text_to_censor = queue.Queue()
 
 petitions = False
 
-def notify_petitions(insult_publisher):
+def notify_petitions(name_server):
 	global petitions
 	while True:
-		time.sleep(5)
 		if petitions:
-			insult_publisher.notify_filter_services()
-			petitions = False
+			insult_publisher_uri = name_server.get_insult_publisher_node()
+			if insult_publisher_uri:
+				insult_publisher = xmlrpc.client.ServerProxy(insult_publisher_uri)
+				insult_publisher.notify_filter_services()
+				petitions = False
+		time.sleep(5)
 
 # Create server
 with SimpleXMLRPCServer(('localhost', 8002),
@@ -48,11 +51,9 @@ with SimpleXMLRPCServer(('localhost', 8002),
 	name_server = xmlrpc.client.ServerProxy('http://localhost:8000')
 	name_server.add_raw_text_storage_node('http://localhost:8002')
 
-	insult_publisher = name_server.get_insult_publisher_node()
-
 	print("Name Server running in http://localhost:8002!")
 
-	thread = threading.Thread(target=notify_petitions, args=(insult_publisher,), daemon=True)
+	thread = threading.Thread(target=notify_petitions, args=(name_server,), daemon=True)
 	thread.start()
 
 	# Run the server's main loop

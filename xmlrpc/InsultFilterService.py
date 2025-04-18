@@ -44,6 +44,7 @@ if len(sys.argv) > 1:
 
 		def awake():
 			global awake
+			print("Notified!")
 			awake = True
 			return ""
 		insult_filter.register_function(awake)

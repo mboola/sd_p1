@@ -52,3 +52,5 @@ sleep 1
 
 # Open new terminal with client
 gnome-terminal --title="Insult Client 1" -- bash -c "python3 InsultClient.py" &
+gnome-terminal --title="Insult Filter Client 1" -- bash -c "python3 InsultFilterClient.py" &
+

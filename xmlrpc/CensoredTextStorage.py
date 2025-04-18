@@ -10,7 +10,7 @@ from xmlrpc.server import SimpleXMLRPCRequestHandler
 class RequestHandler(SimpleXMLRPCRequestHandler):
 	rpc_paths = ('/RPC2',)
 
-censored_texts = []
+censored_texts = ["papanatas"]
 
 # Create server
 with SimpleXMLRPCServer(('localhost', 8004),
