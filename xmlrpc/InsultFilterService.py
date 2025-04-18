@@ -1,7 +1,7 @@
 # Third node to start.
 
 #
-
+import re
 import sys
 import time
 import xmlrpc.client
@@ -16,7 +16,7 @@ class RequestHandler(SimpleXMLRPCRequestHandler):
 # If there is a port inputed as a parameter
 if len(sys.argv) > 1:
 
-	my_insults = []
+	my_insults = ["papanatas"]
 	awake = False
 
 	def filter_texts(raw_text_storage_server, censored_text_storage_server):
