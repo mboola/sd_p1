@@ -26,7 +26,7 @@ def update_insult_filters():
 				insult_filter_worker = xmlrpc.client.ServerProxy(insult_filter_worker_uri)
 				if update:
 					insult_filter_worker.update_insult_list(my_insults)
-				else:
+				if notify:
 					insult_filter_worker.awake()
 			update = False
 			notify = False
