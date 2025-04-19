@@ -1,15 +1,15 @@
 import Pyro4
 import random
-import threading
 import time
+from multiprocessing import Process, Manager
 
 # Definir la clase correctamente y exponerla
 @Pyro4.behavior(instance_mode="single")
 class InsultService:
-    def __init__(self):
-        self.insults = []         # Lista de insultos
-        self.subscribers = []     # Lista de URLs de suscriptores
-    
+    def __init__(self, insults, subscribers):
+        self.insults = insults         # Lista compartida de insultos
+        self.subscribers = subscribers # Lista compartida de suscriptores
+
     @Pyro4.expose
     def add_insult(self, insult):
         if insult not in self.insults:
@@ -20,19 +20,19 @@ class InsultService:
         for subscriber_url in self.subscribers:
             try:
                 print(subscriber_url)
-                proxy = Pyro4.Proxy(subscriber_url)  # Crear un proxy para el suscriptor
-                proxy.update(insult)  # Llamar al método notify del suscriptor
+                proxy = Pyro4.Proxy(subscriber_url)
+                proxy.update(insult)
             except Exception as e:
                 print(f"Error al notificar al suscriptor {subscriber_url}: {e}")
         return "Insulto registrado: " + insult
-    
+
     @Pyro4.expose
     def get_insults(self):
-        return self.insults
-    
+        return list(self.insults)
+
     @Pyro4.expose
     def subscribe(self, subscriber_uri):
-        if (subscriber_uri not in self.subscribers):
+        if subscriber_uri not in self.subscribers:
             self.subscribers.append(subscriber_uri)
             print("Suscriptor registrado")
         else:
@@ -40,12 +40,13 @@ class InsultService:
 
     @Pyro4.expose
     def unsubscribe(self, subscriber_uri):
-        self.subscribers.remove(subscriber_uri)
-        print(f"Unsubscribed {subscriber_uri}")
-    
+        if subscriber_uri in self.subscribers:
+            self.subscribers.remove(subscriber_uri)
+            print(f"Unsubscribed {subscriber_uri}")
+
     def get_random_insult(self):        
         return random.choice(self.insults) if self.insults else None
-    
+
     def broadcast_loop(self):
         while True:
             print("⏳ Revisando...")
@@ -61,20 +62,24 @@ class InsultService:
             time.sleep(5)
 
 
-
 # Ejecutar el servidor
 def main():
-    # Configurar el servidor
-    daemon = Pyro4.Daemon(port=4718)
-    obj = InsultService()
-    uri = daemon.register(obj, objectId="InsultService")
-    
-    # Iniciar broadcasting en hilo separado
-    obj = daemon.objectsById["InsultService"]
-    threading.Thread(target=obj.broadcast_loop, daemon=True).start()
+    with Manager() as manager:
+        insults = manager.list()
+        subscribers = manager.list()
 
-    print(f"InsultService with URI {uri} in execution...")
-    daemon.requestLoop() # Mantener el servidor en ejecución
+        obj = InsultService(insults, subscribers)
+
+        # Configurar el servidor
+        daemon = Pyro4.Daemon(port=4718)
+        uri = daemon.register(obj, objectId="InsultService")
+
+        # Iniciar proceso separado para broadcasting
+        p = Process(target=obj.broadcast_loop, daemon=True)
+        p.start()
+
+        print(f"InsultService with URI {uri} in execution...")
+        daemon.requestLoop()
 
 if __name__ == "__main__":
     main()
