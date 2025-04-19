@@ -1,6 +1,7 @@
 import Pyro4
 import multiprocessing
 import time
+from Config import config
 
 @Pyro4.behavior(instance_mode="single")
 class InsultStorage:
@@ -52,9 +53,11 @@ def main():
     updater_process.start()
 
     daemon = Pyro4.Daemon(port=4718)
-    obj = InsultStorage()
-    uri = daemon.register(obj, objectId="InsultStorage")
-    print(f"InsultStorage with URI: {uri} in execution...")
+    ns = Pyro4.Proxy(config.NAMESERVER_URI)
+    insult_storage = InsultStorage()
+    insult_storage_uri = daemon.register(insult_storage, objectId=config.INSULTSTORAGE_NAME)
+    ns.register(config.INSULTSTORAGE_NAME, insult_storage_uri)
+    print(f"InsultStorage with URI: {insult_storage_uri} in execution...")
     daemon.requestLoop()
 
 if __name__ == "__main__":

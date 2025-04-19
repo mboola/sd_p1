@@ -36,17 +36,15 @@ class Config:
 
     # lista de URIs de filtros de insultos registrados
     FILTER_WORKERS: ClassVar[List[str]] = []
+    INSULT_WORKERS: ClassVar[List[str]] = []
     
     # autoincrement id workers:
     worker_insult_filter_service_id: int = 0
 
-     # Contador de IDs por clase (no es campo del dataclass)
-    _counters: ClassVar[dict[type, int]] = {}
-
     @classmethod
-    def get_id(cls, obj: Union[type, object]) -> int:
-        tipo = obj if isinstance(obj, type) else obj.__class__
-        cls._counters[tipo] = cls._counters.get(tipo, 0) + 1
-        return cls._counters[tipo]
+    # Ejemplo con id(obj)
+    def get_id(cls, obj):
+        return str(id(obj))
+
 
 config = Config()

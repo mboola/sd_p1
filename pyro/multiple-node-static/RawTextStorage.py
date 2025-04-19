@@ -45,7 +45,7 @@ def notify_petitions(insult_publisher_uri, shared_state): #TODO
                 try:
                     insult_publisher = Pyro4.Proxy(insult_publisher_uri)
                 except Pyro4.errors.CommunicationError:
-                    logging.error("Error de comunicación con InsultPublisher, intentando intentar...")
+                    logging.error(f"Error de comunicación con {config.INSULTPUBLISHER_NAME}, intentando intentar...")
                     time.sleep(5)
                     continue
 
@@ -60,7 +60,8 @@ def notify_petitions(insult_publisher_uri, shared_state): #TODO
 
 def main():
     # Arranca daemon y Name Server
-    daemon = Pyro4.Daemon(port=4721)
+    daemon = Pyro4.Daemon(port=config.RAWTEXTSTORAGE_PORT)
+    ns = Pyro4.Proxy(config.NAMESERVER_URI)
     insult_publisher_uri = config.INSULTPUBLISHER_URI
     
     # Manager para compartir estado entre procesos
@@ -71,15 +72,16 @@ def main():
     shared_state.petitions = False
 
     raw_text_storage = RawTextStorage(shared_state)
-    uri = daemon.register(raw_text_storage, objectId="RawTextStorage")
+    raw_text_storage_uri = daemon.register(raw_text_storage, objectId=config.RAWTEXTSTORAGE_NAME)
+    ns.register(config.RAWTEXTSTORAGE_NAME, raw_text_storage_uri)
 
     p = multiprocessing.Process(target=notify_petitions,
-                        args=(insult_publisher_uri, shared_state),
-                        daemon=True)
+                                args=(insult_publisher_uri, shared_state),
+                                daemon=True)
     p.start()
 
     try:
-        logging.info(f"RawTextStorage with URI: {uri} in execution...")
+        logging.info(f"RawTextStorage with URI: {raw_text_storage_uri} in execution...")
         daemon.requestLoop()
     except KeyboardInterrupt:
         logging.info("Apagando nodo RawTextStorage...")
