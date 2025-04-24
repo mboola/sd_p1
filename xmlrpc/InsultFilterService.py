@@ -3,7 +3,6 @@
 #
 import re
 import sys
-import time
 import xmlrpc.client
 import threading
 from xmlrpc.server import SimpleXMLRPCServer
@@ -16,7 +15,7 @@ class RequestHandler(SimpleXMLRPCRequestHandler):
 # If there is a port inputed as a parameter
 if len(sys.argv) > 1:
 
-	my_insults = ["papanatas"]
+	my_insults = []
 	awake = False
 
 	def filter_texts(raw_text_storage_server, censored_text_storage_server):
@@ -24,9 +23,11 @@ if len(sys.argv) > 1:
 		while True:
 			if awake:
 				text = raw_text_storage_server.get_text_to_filter()
-				if text != "":
+				print(text)
+				if text:
 					for insult in my_insults:
 						text = re.sub(insult, "CENSORED", text, flags=re.IGNORECASE)
+					print(text)
 					censored_text_storage_server.add_censored_text(text)
 				else:
 					awake = False
@@ -35,9 +36,12 @@ if len(sys.argv) > 1:
 	with SimpleXMLRPCServer(('localhost', int(sys.argv[1])),
 							requestHandler = RequestHandler) as insult_filter:
 
+		# Called from insult 
 		def update_insult_list(insults):
 			global my_insults
-			my_insults = insults
+			my_insults = []
+			for insult in insults:
+				my_insults.append(insult)
 			print(f"New list of insults '{my_insults}'")
 			return "List updated!"
 		insult_filter.register_function(update_insult_list)

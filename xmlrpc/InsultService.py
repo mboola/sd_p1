@@ -19,27 +19,31 @@ if len(sys.argv) > 1:
 	last_updated_insults = []
 	new_insults = []
 
+	# Separate thread that gets updated insults of insult storage sending its
+	# own new insults
 	def update_insults(insult_storage):
 		global last_updated_insults
 		global new_insults
 		while True:
+			time.sleep(3)
+			print(new_insults)
 			updated_insults = insult_storage.update_insults(new_insults)
-			print(f"New insults '{updated_insults}'!")
+			print(f"Insults obtained from insult storage: '{updated_insults}'!")
 			if new_insults:
 				for insult in new_insults:
 					last_updated_insults.append(insult)
-				print(f"Added insult '{new_insults}' to last_updated_insults!")
+				print(f"Added list insults '{new_insults}' to last_updated_insults!")
 				new_insults = []
 			for insult in updated_insults:
 				if insult not in last_updated_insults:
 					last_updated_insults.append(insult)
 					print(f"Added insult '{insult}' to last_updated_insults!")
-			time.sleep(3)
 
 	# Create observer server
 	with SimpleXMLRPCServer(('localhost', int(sys.argv[1])),
 							requestHandler = RequestHandler) as insult_service:
 
+		# Called from clients
 		def add_insult(insult):
 			if insult not in last_updated_insults:
 				if insult not in new_insults:

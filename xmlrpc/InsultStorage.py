@@ -11,46 +11,52 @@ from xmlrpc.server import SimpleXMLRPCRequestHandler
 class RequestHandler(SimpleXMLRPCRequestHandler):
 	rpc_paths = ('/RPC2',)
 
-last_updated_insults = []
-new_insults = []
+insult_storage_list = []
+recently_added_insults = []
 
+# 
 def notify_insults(insult_publisher):
-	global new_insults
+	global recently_added_insults
 	while True:
-		if new_insults:
-			insult_publisher.update_insults(new_insults)
-			for insult in new_insults:
-				if insult not in last_updated_insults:
-					last_updated_insults.append(insult)
+		if recently_added_insults:
+			insult_publisher.update_insults(recently_added_insults)
+			for insult in recently_added_insults:
+				if insult not in insult_storage_list:
+					insult_storage_list.append(insult)
 					print(f"Added '{insult}' insult_publisher!")
-			new_insults = []
+			recently_added_insults = []
 		time.sleep(5)
 
 # Create observer server
 with SimpleXMLRPCServer(('localhost', 8003),
 						requestHandler = RequestHandler) as insult_storage:
 
-	def update_insults(insults):
-		global last_updated_insults
-		global new_insults
-		print(f"Insults: '{insults}'!")
-		if insults:
-			for insult in insults:
-				if insult not in last_updated_insults:
-					if insult not in new_insults:
-						new_insults.append(insult)
-						print(f"Added insult '{insult}' to new insults!")
-			new_list = last_updated_insults
-			for insult in new_insults:
-				new_list.append(insult)
-			return new_list
-		return last_updated_insults
+	# Called from InsultService nodes. Adds insults to storage and return
+	# all insults currently storage.
+	def update_insults(new_insults):
+		global insult_storage_list
+		global recently_added_insults
+		print(f"Trying to add insults: '{new_insults}'!")
+		if not new_insults:
+			return insult_storage_list
+		for insult in new_insults:
+			if insult not in insult_storage_list:
+				if insult not in recently_added_insults:
+					recently_added_insults.append(insult)
+					print(f"Added insult '{insult}' to recently added insults!")
+		new_list = []
+		for insult in insult_storage_list:
+			new_list.append(insult)
+		for insult in recently_added_insults:
+			new_list.append(insult)
+		return new_list
 	insult_storage.register_function(update_insults)
 
 	def get_insults():
-		global last_updated_insults
-		new_list = last_updated_insults
-		for insult in new_insults:
+		new_list = []
+		for insult in insult_storage_list:
+			new_list.append(insult)
+		for insult in recently_added_insults:
 			new_list.append(insult)
 		return new_list
 	insult_storage.register_function(get_insults)

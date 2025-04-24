@@ -25,6 +25,8 @@ def update_insult_filters():
 			for insult_filter_worker_uri in insult_filters:
 				insult_filter_worker = xmlrpc.client.ServerProxy(insult_filter_worker_uri)
 				if update:
+					print("Updating insult filter workers of new insults:")
+					print(my_insults)
 					insult_filter_worker.update_insult_list(my_insults)
 				if notify:
 					insult_filter_worker.awake()
@@ -37,7 +39,9 @@ with SimpleXMLRPCServer(('localhost', 8006),
 						requestHandler = RequestHandler) as insult_publisher:
 
 	def update_insults(insults):
-		my_insults.append(insults)
+		global update
+		for insult in insults:
+			my_insults.append(insult)
 		update = True
 		return "New insults appended correctly!"
 	insult_publisher.register_function(update_insults)
