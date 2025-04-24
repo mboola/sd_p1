@@ -14,7 +14,8 @@ gnome-terminal --title="Censored Text Storage" -- bash -c "python3 CensoredTextS
 sleep 1
 
 # Open new terminal with 1 .. n Insult Filter
-gnome-terminal --title="Insult Filter Service 1" -- bash -c "python3 InsultFilterService.py 8010" &
+gnome-terminal --title="Insult Filter Service 1" -- bash -c "python3 InsultFilterService.py 8012" &
+gnome-terminal --title="Insult Filter Service 2" -- bash -c "python3 InsultFilterService.py 8013" &
 
 # Wait some time so all Insult Filter Service can start correctly
 sleep 1
@@ -38,19 +39,23 @@ gnome-terminal --title="EventPublisher" -- bash -c "python3 EventPublisher.py" &
 sleep 1
 
 # Open new terminals with Subscriber
-gnome-terminal --title="Subscriber 1" -- bash -c "python3 Subscriber.py 8011" &
-gnome-terminal --title="Subscriber 2" -- bash -c "python3 Subscriber.py 8012" &
+gnome-terminal --title="Subscriber 1" -- bash -c "python3 Subscriber.py 8010" &
+gnome-terminal --title="Subscriber 2" -- bash -c "python3 Subscriber.py 8011" &
 
 # Wait some time so Subscribers can start correctly
 sleep 1
 
 # Open new terminal with 1 .. n Insult Service
-gnome-terminal --title="Insult Service 1" -- bash -c "python3 InsultService.py 8013" &
+gnome-terminal --title="Insult Service 1" -- bash -c "python3 InsultService.py 8014" & 2> error_log2.err
+gnome-terminal --title="Insult Service 2" -- bash -c "python3 InsultService.py 8015" & 2> error_log2.err
 
 # Wait some time so Insult Service can start correctly
 sleep 1
 
 # Open new terminal with client
 gnome-terminal --title="Insult Client 1" -- bash -c "python3 InsultClient.py" &
+
+sleep 10
+
 gnome-terminal --title="Insult Filter Client 1" -- bash -c "python3 InsultFilterClient.py" &
 
