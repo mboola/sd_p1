@@ -1,4 +1,4 @@
-# nameserver.py
+# 0
 import argparse
 from Pyro4.naming import startNSloop
 from Config import config

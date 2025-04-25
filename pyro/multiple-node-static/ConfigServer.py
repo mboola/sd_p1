@@ -1,5 +1,13 @@
+# 1
 import Pyro4
+import uuid
+import logging
 from Config import config, insult_workers_manager, insult_filter_workers_manager
+
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(levelname)s - %(message)s',
+    datefmt='%Y-%m-%d %H:%M:%S')
 
 @Pyro4.expose
 class ConfigServer:
@@ -7,6 +15,12 @@ class ConfigServer:
         self.config = config
         self.insult_workers = insult_workers_manager
         self.insult_filter_workers = insult_filter_workers_manager
+
+    def add_insult_worker(self, uri):
+        self.insult_workers.add_worker(uri)
+
+    def add_insult_filter_worker(self, uri):
+        self.insult_filter_workers.add_worker(uri)
 
     def get_insult_worker(self, client_id):
         return self.insult_workers.get_worker(client_id)
@@ -19,6 +33,11 @@ class ConfigServer:
 
     def free_insult_filter_worker(self, uri):
         self.insult_filter_workers.free_worker(uri)
+
+    def get_id(self):
+        new_id = f"{uuid.uuid4()}"
+        logging.info(f"[LOG] Nuevo ID generado: {new_id}")
+        return new_id
     
     #Get names:
     def get_hostname(self):
@@ -93,7 +112,8 @@ if __name__ == "__main__":
     
     daemon = Pyro4.Daemon(host=config.HOSTNAME, port=config.CONFIG_SERVER_PORT)
     ns = Pyro4.locateNS(host=config.HOSTNAME, port=config.NAMESERVER_PORT)
-    config_server_uri = daemon.register(ConfigServer())
+    config_server = ConfigServer()
+    config_server_uri = daemon.register(config_server, objectId=config.CONFIG_SERVER_NAME)
     ns.register(config.CONFIG_SERVER_NAME, config_server_uri)
     print(f"Servidor corriendo. URI: {config_server_uri}")
     daemon.requestLoop()

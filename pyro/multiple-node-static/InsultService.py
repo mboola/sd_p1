@@ -1,10 +1,10 @@
+# 
 import Pyro4
 import logging
 import time
 import sys
 import multiprocessing
 import copy
-from Config import config
 
 # Formato de logging:
 logging.basicConfig(
@@ -68,25 +68,25 @@ def main():
 
     # Crea daemon y proxy al Name Server
     daemon = Pyro4.Daemon()
-    ns = Pyro4.Proxy(config.NAMESERVER_URI)
+    ns = Pyro4.locateNS()
+    config_server_uri = ns.lookup("ConfigServer")    
+    config_server = Pyro4.Proxy(config_server_uri)
 
     # Instancia el servicio con referencias a listas compartidas
     insult_service = InsultService(new_insults, last_updated_insults)
-    object_id = f"InsultService_{config.get_id(insult_service)}"
+    object_id = f"InsultService_{config_server.get_id()}"
     insult_service_uri = daemon.register(insult_service, objectId=object_id)
     ns.register(object_id, insult_service_uri)
-    insult_storage_uri = ns.lookup(config.INSULTSTORAGE_NAME)
+    insult_storage_uri = ns.lookup(config_server.get_insultstorage_name())
     logging.info(f"InsultService disponible en {insult_service_uri}")
     
     #Intentar registrar el worker en la lista de servicios del Config
     try:
-        config.INSULT_WORKERS[str(insult_service_uri)] = True
-        print(f"URI registrada en Config.INSULT_WORKERS")
+        config_server.add_insult_worker(insult_service_uri)
+        logging.info(f"URI registrada en Config.INSULT_WORKERS")
     except Exception as e:
         print(f"Error registrando URI en Config: {e}")
         sys.exit(1)
-
-    # Obtiene URI de storage desde Name Server
     
     # Inicia proceso de sincronización en segundo plano
     p = multiprocessing.Process(
@@ -98,13 +98,13 @@ def main():
 
     # Ejecuta el bucle de servicio
     try:
-        logging.info(f"{object_id} with URI: {insult_service_uri} in execution...")
+        logging.info(f"InsultService with URI: {insult_service_uri} in execution...")
         daemon.requestLoop()
     except KeyboardInterrupt:
         logging.info("Apagando InsultService...")
         daemon.shutdown()
-        #TODO: Sacar el worker de la lista de servicios del Config
-
+        config_server.free_insult_worker(insult_service_uri)
+        logging.info(f"URI {insult_service_uri} liberada de Config.INSULT_WORKERS")
 
 if __name__ == "__main__":
     main()

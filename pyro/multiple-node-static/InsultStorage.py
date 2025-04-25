@@ -1,7 +1,7 @@
+# 2
 import Pyro4
 import multiprocessing
 import time
-from Config import config
 
 @Pyro4.behavior(instance_mode="single")
 class InsultStorage:
@@ -47,16 +47,22 @@ def main():
     insults = manager.list()
     new_insults = manager.list()
 
+    ns = Pyro4.locateNS()
+    config_server_uri = ns.lookup("ConfigServer")    
+    config_server = Pyro4.Proxy(config_server_uri)
+
+    insult_storage_name = config_server.get_insultstorage_name()
+    insult_storage_port = config_server.get_insultstorage_port()
+
     # Crear el proceso del actualizador
     updater_process = multiprocessing.Process(target=background_updater, args=(insults, new_insults))
     updater_process.daemon = True
     updater_process.start()
 
-    daemon = Pyro4.Daemon(port=4718)
-    ns = Pyro4.Proxy(config.NAMESERVER_URI)
+    daemon = Pyro4.Daemon(port=insult_storage_port)
     insult_storage = InsultStorage()
-    insult_storage_uri = daemon.register(insult_storage, objectId=config.INSULTSTORAGE_NAME)
-    ns.register(config.INSULTSTORAGE_NAME, insult_storage_uri)
+    insult_storage_uri = daemon.register(insult_storage, objectId=insult_storage_name)
+    ns.register(insult_storage_name, insult_storage_uri)
     print(f"InsultStorage with URI: {insult_storage_uri} in execution...")
     daemon.requestLoop()
 

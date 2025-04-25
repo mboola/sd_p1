@@ -65,7 +65,7 @@ def filter_texts(insults, awake, raw_uri, text_uri):
 
 
 def main():
-    daemon = Pyro4.Daemon()
+    daemon = Pyro4.Daemon() #TODO El puerto se tiene especificar aquí
     ns = Pyro4.Proxy(config.NAMESERVER_URI)
 
     manager = multiprocessing.Manager()
