@@ -77,8 +77,8 @@ def main():
 
     #Intentar registrar el worker en la lista de servicios del Config
     try:
-        config.FILTER_WORKERS.append(worker_insult_filter_service_uri)
-        print(f"URI registrada en Config.FILTER_WORKERS")
+        config.INSULT_FILTER_WORKERS[str(worker_insult_filter_service_uri)] = True
+        print(f"URI registrada en Config.INSULT_FILTER_WORKERS")
     except Exception as e:
         print(f"Error registrando URI en Config: {e}")
         sys.exit(1)

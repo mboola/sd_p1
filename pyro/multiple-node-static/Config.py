@@ -1,7 +1,8 @@
 # Almacenar de forma centralizada variables globales y constantes
 from typing import Final
 from dataclasses import dataclass
-from typing import Final, ClassVar, Union, List
+from typing import Final, ClassVar, Dict
+from queue import Queue
 
 @dataclass(frozen=True)
 class Config:
@@ -17,6 +18,7 @@ class Config:
     INSULTPUBLISHER_NAME: Final[str] = "InsultPublisher"
     RAWTEXTSTORAGE_NAME: Final[str] = "RawTextStorage"
     TEXT_STORAGE_NAME: Final[str] = "TextStorage"
+    CONFIG_SERVER_NAME: Final[str] = "ConfigServer"
     
     # server ports
     NAMESERVER_PORT: Final[int] = 9090
@@ -25,6 +27,7 @@ class Config:
     INSULTPUBLISHER_PORT: Final[int] = 4720
     RAWTEXTSTORAGE_PORT: Final[int] = 4721
     TEXT_STORAGE_PORT: Final[int] = 4722
+    CONFIG_SERVER_NAME: Final[str] = 4723
 
     # server URIs
     NAMESERVER_URI: Final[str] = f"PYRONAME:{NAMESERVER_NAME}@{HOSTNAME}:{NAMESERVER_PORT}"
@@ -33,18 +36,35 @@ class Config:
     INSULTPUBLISHER_URI: Final[str] = f"PYRONAME:{INSULTPUBLISHER_NAME}@{HOSTNAME}:{INSULTPUBLISHER_PORT}"
     RAWTEXTSTORAGE_URI: Final[str] = f"PYRONAME:{RAWTEXTSTORAGE_NAME}@{HOSTNAME}:{RAWTEXTSTORAGE_PORT}"
     TEXT_STORAGE_URI: Final[str] = f"PYRONAME:{TEXT_STORAGE_NAME}@{HOSTNAME}:{TEXT_STORAGE_PORT}"
-
-    # lista de URIs de filtros de insultos registrados
-    FILTER_WORKERS: ClassVar[List[str]] = []
-    INSULT_WORKERS: ClassVar[List[str]] = []
-    
-    # autoincrement id workers:
-    worker_insult_filter_service_id: int = 0
-
-    @classmethod
-    # Ejemplo con id(obj)
-    def get_id(cls, obj):
-        return str(id(obj))
-
+    CONFIG_SERVER_URI: Final[str] = f"PYRONAME:{CONFIG_SERVER_NAME}@{HOSTNAME}:{CONFIG_SERVER_NAME}"
 
 config = Config()
+
+
+class WorkerManager:
+    def __init__(self):
+        self.workers: Dict[str, bool] = {}
+        self.client_queue: Queue = Queue()
+
+    def add_worker(self, uri: str):
+        self.workers[uri] = True
+
+    def get_worker(self, cliente_id: str) -> str:
+        for uri, state in self.workers.items():
+            if state:
+                self.workers[uri] = False
+                print(f"Asignado {uri} a {cliente_id}")
+                return uri
+        self.client_queue.put(cliente_id)
+        print(f"{cliente_id} en cola")
+        return "In_queue"
+
+    def free_worker(self, uri: str):
+        self.workers[uri] = True
+        if not self.client_queue.empty():
+            cliente_id = self.client_queue.get()
+            self.workers[uri] = False
+            print(f"Worker {uri} asignado a {cliente_id} desde la cola")
+
+insult_workers_manager = WorkerManager()
+insult_filter_workers_manager = WorkerManager()

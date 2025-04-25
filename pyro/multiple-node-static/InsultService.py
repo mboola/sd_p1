@@ -80,7 +80,7 @@ def main():
     
     #Intentar registrar el worker en la lista de servicios del Config
     try:
-        config.INSULT_WORKERS.append(insult_service_uri)
+        config.INSULT_WORKERS[str(insult_service_uri)] = True
         print(f"URI registrada en Config.INSULT_WORKERS")
     except Exception as e:
         print(f"Error registrando URI en Config: {e}")
