@@ -16,8 +16,15 @@ gnome-terminal --title="Subscriber 1" -- bash -c "python3 Subscriber.py" &
 # Open new terminal with Subscriber 2
 gnome-terminal --title="Subscriber 2" -- bash -c "python3 Subscriber.py" &
 
-# Open new terminal with broadcaster
+# Open new terminal with Event Publisher
 gnome-terminal --title="Event Publisher" -- bash -c "python3 EventPublisher.py" &
+
+# Open new terminal with Insult Filter Client
+gnome-terminal --title="Insult Client" -- bash -c "python3 InsultFilterClient.py" &
+
+# Open new terminal with Insult Filter Service
+gnome-terminal --title="Insult Filter Service 1" -- bash -c "python3 InsultFilterService.py" &
+gnome-terminal --title="Insult Filter Service 2" -- bash -c "python3 InsultFilterService.py" &
 
 echo -e "\e[31mWaiting 20 seconds and then closing redis.\e[0m"
 sleep 20
