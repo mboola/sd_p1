@@ -3,6 +3,7 @@
 #
 import re
 import sys
+import time
 import xmlrpc.client
 import threading
 from xmlrpc.server import SimpleXMLRPCServer
@@ -21,7 +22,9 @@ if len(sys.argv) > 1:
 	def filter_texts(raw_text_storage_server, censored_text_storage_server):
 		global awake
 		while True:
+			#time.sleep(1)
 			if awake:
+				print("Trying to get a new text")
 				text = raw_text_storage_server.get_text_to_filter()
 				print(text)
 				if text:
@@ -30,6 +33,7 @@ if len(sys.argv) > 1:
 					print(text)
 					censored_text_storage_server.add_censored_text(text)
 				else:
+					print("Text empty")
 					awake = False
 
 	# Create observer server
