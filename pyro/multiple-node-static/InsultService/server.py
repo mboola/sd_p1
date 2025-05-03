@@ -1,5 +1,6 @@
 import Pyro4
 import redis
+import sys
 import logging
 
 logging.basicConfig(
@@ -38,12 +39,15 @@ class InsultService:
         return list(self.r.smembers("insults"))
 
 def main():
-    daemon = Pyro4.Daemon()
+    port = int(sys.argv[1]) # >= 49152
+    name = sys.argv[2] #InsultService_{i}
+
+    daemon = Pyro4.Daemon(port=port)
     ns = Pyro4.locateNS()
     obj = InsultService()
-    uri = daemon.register(obj, objectId="InsultService")
-    ns.register("InsultService", uri)
-    logging.info(f"InsultService registrado en {uri}")
+    uri = daemon.register(obj)
+    ns.register(name, uri)
+    logging.info(f"{name} registrado en {uri}")
     daemon.requestLoop()
 
 if __name__ == "__main__":

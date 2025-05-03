@@ -1,24 +1,35 @@
-from Pyro4 import Proxy
+import Pyro4
+import time
 
-remote = Proxy("PYRO:InsultService@localhost:4718")
+N = 1000
+LOGFILE = f"resultados_insultservice_{N}_pyro.txt"
 
-def test_add_insult():
-    result = remote.add_insult("idiota")
-    assert result == "Insulto registrado: idiota" or result == "Insulto ya registrado"
-    print("OK")
+def main():
+    ns = Pyro4.locateNS()
+    insult_service_server_uri = ns.lookup("InsultService")
+    insult_service_server = Pyro4.Proxy(insult_service_server_uri)
 
-def test_no_duplicates():
-    remote.add_insult("idiota")
-    result = remote.add_insult("idiota")
-    assert result == "Insulto ya registrado"
-    print("OK")
+    print(f" Enviando {N} insultos al servicio InsultService (Pyro4)...")
 
-def test_get_insults():
-    insults = remote.get_insults()
-    assert isinstance(insults, list)
-    assert "idiota" in insults
-    print("OK")
+    start = time.time()
+    for i in range(N):
+        insult = f"insulto_{i}"
+        insult_service_server.add_insult(insult)
+    end = time.time()
 
-test_add_insult()
-test_no_duplicates()
-test_get_insults()
+    total_time = end - start
+    throughput = N / total_time
+
+    output = (
+        f"TEST: InsultService (Pyro4)\n"
+        f"Total requests: {N}\n"
+        f"Tiempo total: {total_time:.4f} segundos\n"
+        f"Throughput: {throughput:.2f} peticiones/segundo\n"
+    )
+
+    print(output)
+    with open(LOGFILE, "w") as f:
+        f.write(output)
+
+if __name__ == "__main__":
+    main()

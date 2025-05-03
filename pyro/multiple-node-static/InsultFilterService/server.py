@@ -1,6 +1,7 @@
 import Pyro4
 import redis
 import logging
+import sys
 from datetime import datetime, timezone
 
 logging.basicConfig(
@@ -60,12 +61,15 @@ class InsultFilterService:
         return [{ "id": k, "text": v.split("|")[0], "timestamp": v.split("|")[1] } for k, v in raw.items()]
 
 def main():
-    daemon = Pyro4.Daemon()
+    port = int(sys.argv[1]) # >= 50152
+    name = sys.argv[2] # #InsultFilterService_{i}
+
+    daemon = Pyro4.Daemon(port=port)
     ns = Pyro4.locateNS()
     obj = InsultFilterService()
-    uri = daemon.register(obj, objectId="InsultFilterService")
-    ns.register("InsultFilterService", uri)
-    logging.info(f"InsultFilterService registrado en {uri}")
+    uri = daemon.register(obj)
+    ns.register(name, uri)
+    logging.info(f"{name} registrado en {uri}")
     daemon.requestLoop()
 
 if __name__ == "__main__":

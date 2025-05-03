@@ -1,28 +1,24 @@
-from Pyro4 import Daemon, Proxy, expose, locateNS
-from observer import Observer
-
-class Client(Observer):
-    @expose
-    def update(self, insult):   
-        print("Event: ", insult)
+import Pyro4
+import random
 
 def main():
-    with Daemon() as daemon:
-        # Crear y registrar el callback
-        client = Client()
-        client_uri = daemon.register(client)
+    ns = Pyro4.locateNS()
+    insult_service_server_uri = ns.lookup("InsultService")
+    insult_service_server = Pyro4.Proxy(insult_service_server_uri)
+    
+    insults = [
+        "idiot", "moron", "jerk", "loser", "dumbass", "numbskull",
+        "nitwit", "clown", "blockhead", "twit", "doofus", "airhead"
+    ]
 
-        # Conectarse al servidor (usa el URI que imprime tu servidor)
-        server = Proxy("PYRO:InsultService@localhost:4718")
-
-        # Añadir insulto
-        result = server.add_insult("stupid")
-        print("Resultado al añadir insulto:", result)
-
-        # Suscribirse al broadcasting
-        server.subscribe(client_uri)
-
-        daemon.requestLoop()
+    def get_random_insult():
+        insult = random.choice(insults)
+        print("Insulto ha añadir:", insult)
+        return insult
+    
+    print("Connecting to the InsultService...")
+    result = insult_service_server.add_insult(get_random_insult())
+    print("✅", result)
 
 if __name__ == "__main__":
     main()

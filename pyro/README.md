@@ -34,7 +34,7 @@ object via the Name Server.
 <br>
 
 <p align="center">
-  <img src="https://www.codemag.com/Article/Image/0301091/Figure%203.bmp" alt="expr" width="350px">
+  <img src="../resources/img/figure-3.PNG" alt="expr" width="350px">
 </p>
 
 <br>
