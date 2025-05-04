@@ -25,7 +25,7 @@ def main():
         # processes.append(launch("RabbitMQ", "rabbitmq-server"))
 
         # 3. Multiple InsultService instances
-        number_insult_services = 2
+        number_insult_services = 1
         base_port_insult = 49152
         for i in range(number_insult_services):
             port = base_port_insult + i
@@ -34,7 +34,7 @@ def main():
             processes.append(launch(name, cmd))
 
         # 4. Multiple InsultFilterService instances
-        number_filter_services = 2
+        number_filter_services = 1
         base_port_filter = 50152
         for i in range(number_filter_services):
             port = base_port_filter + i
