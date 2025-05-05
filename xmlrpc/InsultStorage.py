@@ -36,20 +36,15 @@ with SimpleXMLRPCServer(('localhost', 8003),
 	def update_insults(new_insults):
 		global insult_storage_list
 		global recently_added_insults
-		print(f"Trying to add insults: '{new_insults}'!")
+		#print(f"Trying to add insults: '{new_insults}'!")
 		if not new_insults:
 			return insult_storage_list
 		for insult in new_insults:
 			if insult not in insult_storage_list:
 				if insult not in recently_added_insults:
 					recently_added_insults.append(insult)
-					print(f"Added insult '{insult}' to recently added insults!")
-		new_list = []
-		for insult in insult_storage_list:
-			new_list.append(insult)
-		for insult in recently_added_insults:
-			new_list.append(insult)
-		return new_list
+					#print(f"Added insult '{insult}' to recently added insults!")
+		return "Added!"
 	insult_storage.register_function(update_insults)
 
 	def get_insults():

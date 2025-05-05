@@ -20,7 +20,7 @@ def notify_subscribers(insult_storage):
 		if insults:
 			random_insult = random.choice(insults)
 			for subscriber_uri in subscribers:
-				print(f"Notifying insult '{random_insult}' to subscriber URI '{subscriber_uri}'!")
+				#print(f"Notifying insult '{random_insult}' to subscriber URI '{subscriber_uri}'!")
 				subscriber = xmlrpc.client.ServerProxy(subscriber_uri)
 				subscriber.notify(random_insult)
 		time.sleep(5)
@@ -31,7 +31,7 @@ with SimpleXMLRPCServer(('localhost', 8005),
 
 	def register_subscriber(subscriber):
 		if subscriber not in subscribers:
-			print(f"Registered subscriber URI '{subscriber}'!")
+			#print(f"Registered subscriber URI '{subscriber}'!")
 			subscribers.append(subscriber)
 		return "Subscriber added correctly!"
 	publisher.register_function(register_subscriber)

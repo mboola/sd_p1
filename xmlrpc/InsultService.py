@@ -8,10 +8,14 @@ import threading
 import xmlrpc.client
 from xmlrpc.server import SimpleXMLRPCServer
 from xmlrpc.server import SimpleXMLRPCRequestHandler
+from socketserver import ThreadingMixIn
 
 # Restrict to a particular path
 class RequestHandler(SimpleXMLRPCRequestHandler):
 	rpc_paths = ('/RPC2',)
+
+class ThreadedXMLRPCServer(ThreadingMixIn, SimpleXMLRPCServer):
+	pass
 
 # If there is a port inputed as a parameter
 if len(sys.argv) > 1:
@@ -25,22 +29,15 @@ if len(sys.argv) > 1:
 		global last_updated_insults
 		global new_insults
 		while True:
-			time.sleep(3)
-			print(new_insults)
-			updated_insults = insult_storage.update_insults(new_insults)
-			print(f"Insults obtained from insult storage: '{updated_insults}'!")
-			if new_insults:
-				for insult in new_insults:
-					last_updated_insults.append(insult)
-				print(f"Added list insults '{new_insults}' to last_updated_insults!")
-				new_insults = []
-			for insult in updated_insults:
-				if insult not in last_updated_insults:
-					last_updated_insults.append(insult)
-					print(f"Added insult '{insult}' to last_updated_insults!")
+			time.sleep(10)
+			#print(new_insults)
+			insult_storage.update_insults(new_insults)
+			for insult in new_insults:
+				last_updated_insults.append(insult)
+			new_insults = []
 
 	# Create observer server
-	with SimpleXMLRPCServer(('localhost', int(sys.argv[1])),
+	with ThreadedXMLRPCServer(('localhost', int(sys.argv[1])),
 							requestHandler = RequestHandler) as insult_service:
 
 		# Called from clients
@@ -48,7 +45,7 @@ if len(sys.argv) > 1:
 			if insult not in last_updated_insults:
 				if insult not in new_insults:
 					new_insults.append(insult)
-					print(f"Added insult '{insult}' to new insults!")
+					#print(f"Added insult '{insult}' to new insults!")
 			return "List updated!"
 		insult_service.register_function(add_insult)
 
@@ -64,4 +61,8 @@ if len(sys.argv) > 1:
 		thread = threading.Thread(target=update_insults, args=(insult_storage,), daemon=True)
 		thread.start()
 
-		insult_service.serve_forever()
+		try:
+			insult_service.serve_forever()
+		except KeyboardInterrupt:
+			print("\nShutting down server...")
+			insult_service.server_close()

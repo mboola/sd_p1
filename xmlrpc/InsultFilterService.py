@@ -1,9 +1,7 @@
 # Third node to start.
-
 #
 import re
 import sys
-import time
 import xmlrpc.client
 import threading
 from xmlrpc.server import SimpleXMLRPCServer
@@ -24,16 +22,16 @@ if len(sys.argv) > 1:
 		while True:
 			#time.sleep(1)
 			if awake:
-				print("Trying to get a new text")
+				#print("Trying to get a new text")
 				text = raw_text_storage_server.get_text_to_filter()
-				print(text)
+				#print(text)
 				if text:
 					for insult in my_insults:
 						text = re.sub(insult, "CENSORED", text, flags=re.IGNORECASE)
-					print(text)
+					#print(text)
 					censored_text_storage_server.add_censored_text(text)
 				else:
-					print("Text empty")
+					#print("Text empty")
 					awake = False
 
 	# Create observer server
@@ -46,13 +44,13 @@ if len(sys.argv) > 1:
 			my_insults = []
 			for insult in insults:
 				my_insults.append(insult)
-			print(f"New list of insults '{my_insults}'")
+			#print(f"New list of insults '{my_insults}'")
 			return "List updated!"
 		insult_filter.register_function(update_insult_list)
 
 		def awake():
 			global awake
-			print("Notified!")
+			#print("Notified!")
 			awake = True
 			return ""
 		insult_filter.register_function(awake)

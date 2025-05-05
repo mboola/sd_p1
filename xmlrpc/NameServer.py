@@ -25,7 +25,7 @@ with SimpleXMLRPCServer(('localhost', 8000),
 	def add_insult_worker(worker):
 		if worker not in insult_service_workers:
 			insult_service_workers.append(worker)
-			print(f"Added URI: '{worker}' to insult_service_workers!")
+			#print(f"Added URI: '{worker}' to insult_service_workers!")
 			return "Node added correctly!"
 		return "Node already added!"
 	name_server.register_function(add_insult_worker)
@@ -37,7 +37,7 @@ with SimpleXMLRPCServer(('localhost', 8000),
 	def add_insult_filter_worker(worker):
 		if worker not in insult_filter_service_workers:
 			insult_filter_service_workers.append(worker)
-			print(f"Added URI: '{worker}' to insult_filter_service_workers!")
+			#print(f"Added URI: '{worker}' to insult_filter_service_workers!")
 			return "Node added correctly!"
 		return "Node already added!"
 	name_server.register_function(add_insult_filter_worker)
@@ -49,7 +49,7 @@ with SimpleXMLRPCServer(('localhost', 8000),
 	def add_event_publisher_node(event_publisher):
 		global event_publisher_node
 		event_publisher_node = event_publisher
-		print(f"Added URI: '{event_publisher_node}' as Publisher!")
+		#print(f"Added URI: '{event_publisher_node}' as Publisher!")
 		return "Publisher added correctly!"
 	name_server.register_function(add_event_publisher_node)
 
@@ -60,7 +60,7 @@ with SimpleXMLRPCServer(('localhost', 8000),
 	def add_insult_storage_node(insult_storage):
 		global insult_storage_node
 		insult_storage_node = insult_storage
-		print(f"Added URI: '{insult_storage_node}' as Insult Storage!")
+		#print(f"Added URI: '{insult_storage_node}' as Insult Storage!")
 		return "Insult storage added correctly!"
 	name_server.register_function(add_insult_storage_node)
 
@@ -71,7 +71,7 @@ with SimpleXMLRPCServer(('localhost', 8000),
 	def add_insult_publisher_node(insult_publisher):
 		global insult_publisher_node
 		insult_publisher_node = insult_publisher
-		print(f"Added URI: '{insult_publisher_node}' as Storage Publisher!")
+		#print(f"Added URI: '{insult_publisher_node}' as Storage Publisher!")
 		return "Insult storage added correctly!"
 	name_server.register_function(add_insult_publisher_node)
 

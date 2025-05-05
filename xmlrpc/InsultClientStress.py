@@ -1,5 +1,6 @@
 import xmlrpc.client
 import time
+from concurrent.futures import ThreadPoolExecutor, as_completed
 
 insults = [
 	"papanatas", "bobo", "estupido", "bobete",   "nincompoop", "buffoon", "dimwit", "clod", "doofus", "numbskull", "dullard", "simpleton", "twit", "loon",
@@ -15,21 +16,30 @@ insults = [
 ]
 
 n_insults = len(insults)
+TOTAL_REQUESTS = 4
+MAX_THREADS = 2  # Tune based on system/network capabilities
 
-# Getting server in "http://localhost:8000"
+# Get server proxies
 name_server = xmlrpc.client.ServerProxy('http://localhost:8000')
 insult_service_workers_uri = name_server.get_insult_workers()
-
-insult_servers = []
 n_workers = len(insult_service_workers_uri)
-for i in range(n_workers):
-	insult_servers.append(xmlrpc.client.ServerProxy(insult_service_workers_uri[i]))
+insult_servers = [xmlrpc.client.ServerProxy(uri) for uri in insult_service_workers_uri]
 
-TOTAL_REQUESTS = 50000
+# Function to send a single request
+def send_insult(i):
+	return insult_servers[i % n_workers].add_insult(insults[i % n_insults])
 
+# Start timing
 start_time = time.time()
 
-for i in range(TOTAL_REQUESTS):
-	insult_servers[i % n_workers].add_insult(insults[i % n_insults])
+# Launch in parallel
+with ThreadPoolExecutor(max_workers=MAX_THREADS) as executor:
+	futures = [executor.submit(send_insult, i) for i in range(TOTAL_REQUESTS)]
+	for future in as_completed(futures):
+		try:
+			future.result()
+		except Exception as e:
+			print(f"Request failed: {e}")
 
+# Done
 print(f"Total time: {time.time() - start_time:.2f} seconds")

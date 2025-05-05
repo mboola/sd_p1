@@ -35,13 +35,13 @@ with SimpleXMLRPCServer(('localhost', 8002),
 	def add_text_to_filter(text):
 		global petitions
 		petitions = True
-		print(f"Text to filter added: {text}!")
+		#print(f"Text to filter added: {text}!")
 		text_to_censor.put(text)
 		return "Text to filter added correctly!"
 	raw_text_storage.register_function(add_text_to_filter)
 
 	def get_text_to_filter():
-		print(f"Obtaining text to filter!")
+		#print(f"Obtaining text to filter!")
 		if (text_to_censor.empty()):
 			return ""
 		return text_to_censor.get()

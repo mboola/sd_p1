@@ -11,5 +11,5 @@ raw_texts = ["Eres un papanatas!", "Tremendo bobo", "Como puedes ser tan estupid
 i = 0
 raw_text_storage_server = xmlrpc.client.ServerProxy(raw_text_storage_uri)
 for i in range(100):
-    print(f"Adding text!")
+    #print(f"Adding text!")
     raw_text_storage_server.add_text_to_filter(raw_texts[i % 4])
