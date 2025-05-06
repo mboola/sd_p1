@@ -8,14 +8,10 @@ import threading
 import xmlrpc.client
 from xmlrpc.server import SimpleXMLRPCServer
 from xmlrpc.server import SimpleXMLRPCRequestHandler
-from socketserver import ThreadingMixIn
 
 # Restrict to a particular path
 class RequestHandler(SimpleXMLRPCRequestHandler):
 	rpc_paths = ('/RPC2',)
-
-class ThreadedXMLRPCServer(ThreadingMixIn, SimpleXMLRPCServer):
-	pass
 
 # If there is a port inputed as a parameter
 if len(sys.argv) > 1:
@@ -37,7 +33,7 @@ if len(sys.argv) > 1:
 			new_insults = []
 
 	# Create observer server
-	with ThreadedXMLRPCServer(('localhost', int(sys.argv[1])),
+	with SimpleXMLRPCServer(('localhost', int(sys.argv[1])),
 							requestHandler = RequestHandler) as insult_service:
 
 		# Called from clients

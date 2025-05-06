@@ -16,8 +16,8 @@ insults = [
 ]
 
 n_insults = len(insults)
-TOTAL_REQUESTS = 4
-MAX_THREADS = 2  # Tune based on system/network capabilities
+TOTAL_REQUESTS = 100
+MAX_THREADS = 10  # Tune based on system/network capabilities
 
 # Get server proxies
 name_server = xmlrpc.client.ServerProxy('http://localhost:8000')
@@ -34,12 +34,7 @@ start_time = time.time()
 
 # Launch in parallel
 with ThreadPoolExecutor(max_workers=MAX_THREADS) as executor:
-	futures = [executor.submit(send_insult, i) for i in range(TOTAL_REQUESTS)]
-	for future in as_completed(futures):
-		try:
-			future.result()
-		except Exception as e:
-			print(f"Request failed: {e}")
+	executor.map(send_insult, range(TOTAL_REQUESTS))
 
 # Done
 print(f"Total time: {time.time() - start_time:.2f} seconds")

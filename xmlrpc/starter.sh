@@ -68,11 +68,11 @@ sleep 1
 python3 InsultService.py 8014 &
 insult_service1=$(echo $!)
 #gnome-terminal --title="Insult Service 2" -- bash -c "python3 InsultService.py 8015" &
-#python3 InsultService.py 8015 &
-#insult_service2=$(echo $!)
+python3 InsultService.py 8015 &
+insult_service2=$(echo $!)
 #gnome-terminal --title="Insult Service 3" -- bash -c "python3 InsultService.py 8016" &
-#python3 InsultService.py 8016 &
-#insult_service3=$(echo $!)
+python3 InsultService.py 8016 &
+insult_service3=$(echo $!)
 
 # Wait some time so Insult Service can start correctly
 sleep 1
@@ -80,26 +80,26 @@ sleep 1
 # Open new terminal with client
 #gnome-terminal --title="Insult Client 1" -- bash -c "python3 InsultClient.py 1> time_log" &
 echo "3 node:" 1>> time_log
-start=$(date +%s)
-echo $start 1>> time_log
+#start=$(date +%s)
+#echo $start 1>> time_log
 
-python3 InsultClientStress.py &
-pid1=$(echo $!)
-python3 InsultClientStress.py &
-pid2=$(echo $!)
-python3 InsultClientStress.py &
-pid3=$(echo $!)
-python3 InsultClientStress.py 
+python3 InsultClientStress.py >> time_log
+#pid1=$(echo $!)
+#python3 InsultClientStress.py &
+#pid2=$(echo $!)
+#python3 InsultClientStress.py &
+#pid3=$(echo $!)
+#python3 InsultClientStress.py 
 
-wait $pid1
-wait $pid2
-wait $pid3
+#wait $pid1
+#wait $pid2
+#wait $pid3
 
-end=$(date +%s)
-echo $end 1>> time_log
-echo "Total time: $((end - start)) seconds" 1>> time_log
+#end=$(date +%s)
+#echo $end 1>> time_log
+#echo "Total time: $((end - start)) seconds" 1>> time_log
 
-sleep 2
+sleep 10
 
 kill $name_server
 kill $raw_storage
@@ -111,8 +111,8 @@ kill $event_publisher
 kill $event_subscriber1
 kill $event_subscriber2
 kill $insult_service1
-#kill $insult_service2
-#kill $insult_service3
+kill $insult_service2
+kill $insult_service3
 
 #gnome-terminal --title="Insult Filter Client 1" -- bash -c "python3 InsultFilterClient.py" &
 
