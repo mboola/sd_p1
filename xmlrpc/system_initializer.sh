@@ -47,8 +47,8 @@ sleep 1
 insult_filter_port=8012
 insult_filter_pids=()
 
-for ((i=$insult_filter_port; i<$nodes; i++)); do
-	python3 InsultFilterService.py "$i" & > /dev/null
+for ((i=0; i<$nodes; i++)); do
+	python3 InsultFilterService.py "$((i + insult_filter_port))" & > /dev/null
 	pid=$!
 	insult_filter_pids+=("$pid")
 done
@@ -90,8 +90,8 @@ sleep 1
 insult_port=8016
 insult_pids=()
 
-for ((i=$insult_port; i<$nodes; i++)); do
-	python3 InsultService.py "$i" & > /dev/null
+for ((i=0; i<$nodes; i++)); do
+	python3 InsultService.py "$((i + insult_port))" & > /dev/null
 	pid=$!
 	insult_pids+=("$pid")
 done

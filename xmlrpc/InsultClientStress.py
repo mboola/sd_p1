@@ -4,10 +4,7 @@ import sys
 from concurrent.futures import ThreadPoolExecutor
 
 petitions = int(sys.argv[1])
-threads = int(sys.argv[2])
-
-print(petitions)
-print(threads)
+n_threads = int(sys.argv[2])
 
 insults = [
 	"papanatas", "bobo", "estupido", "bobete",   "nincompoop", "buffoon", "dimwit", "clod", "doofus", "numbskull", "dullard", "simpleton", "twit", "loon",
@@ -43,7 +40,7 @@ def send_insult(i):
 start_time = time.time()
 
 # Launch in parallel
-with ThreadPoolExecutor(max_workers=threads) as executor:
+with ThreadPoolExecutor(max_workers=n_threads) as executor:
 	futures = [executor.submit(send_insult, i) for i in range(petitions)]
 
 	# Wait for the results and collect them
