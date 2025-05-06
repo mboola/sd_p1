@@ -1,6 +1,13 @@
 import time
 import xmlrpc.client
+import sys
 from concurrent.futures import ThreadPoolExecutor
+
+petitions = int(sys.argv[1])
+threads = int(sys.argv[2])
+
+print(petitions)
+print(threads)
 
 insults = [
 	"papanatas", "bobo", "estupido", "bobete",   "nincompoop", "buffoon", "dimwit", "clod", "doofus", "numbskull", "dullard", "simpleton", "twit", "loon",
@@ -16,8 +23,6 @@ insults = [
 ]
 
 n_insults = len(insults)
-TOTAL_REQUESTS = 5000
-MAX_THREADS = 4  # Tune based on system/network capabilities
 
 # Get server proxies
 name_server = xmlrpc.client.ServerProxy('http://localhost:8000')
@@ -38,8 +43,8 @@ def send_insult(i):
 start_time = time.time()
 
 # Launch in parallel
-with ThreadPoolExecutor(max_workers=MAX_THREADS) as executor:
-	futures = [executor.submit(send_insult, i) for i in range(TOTAL_REQUESTS)]
+with ThreadPoolExecutor(max_workers=threads) as executor:
+	futures = [executor.submit(send_insult, i) for i in range(petitions)]
 
 	# Wait for the results and collect them
 	results = [future.result() for future in futures]
