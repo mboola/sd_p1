@@ -1,5 +1,8 @@
 import redis
 import re
+import sys
+
+petitions = int(sys.argv[1])
 
 # Connect to Redis
 server = redis.Redis(host='localhost', port=6379, db=0, decode_responses=True)
@@ -20,3 +23,6 @@ while True:
 			new_text = re.sub(banned_word, "CENSORED", new_text, flags=re.IGNORECASE)
 		print(f"Text sent: '{new_text}'")
 		server.rpush(result_queue, new_text)
+		length = server.llen(result_queue)
+		if (length >= petitions):
+			server.publish("end_condition_channel", "Ended!")
