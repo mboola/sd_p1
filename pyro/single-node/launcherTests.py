@@ -1,25 +1,23 @@
 import subprocess
 import time
 import os
-import redis
 import sys
+import redis
 
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 
-def launch(name, command, wait_time=1):
-    print(f"🚀 Iniciando: {name}")
+def launch(name, command, wait=1):
+    print(f" Iniciando: {name}")
     process = subprocess.Popen(command, shell=True)
-    time.sleep(wait_time)
+    time.sleep(wait)
     return process
 
 def main():
     processes = []
 
     try:
-        number_insult_services = int(sys.argv[1])
-        number_filter_services = int(sys.argv[2])
-        number_petitions_insult = int(sys.argv[3])
-        number_petitions_text = int(sys.argv[4])
+        number_petitions_insult = int(sys.argv[1])
+        number_petitions_text = int(sys.argv[2])
 
         # 0. Name Server
         processes.append(launch("NameServer", "pyro4-ns"))
@@ -27,21 +25,11 @@ def main():
         # 1. Redis
         processes.append(launch("Redis", f"python3 {BASE_DIR}/RedisServer.py"))
 
-        # 2. Multiple instancias de InsultService
-        base_port_insult = 49152
-        for i in range(number_insult_services):
-            port = base_port_insult + i
-            name = f"InsultService_{i}"
-            cmd = f"python3 InsultService/server.py {port} {name}"
-            processes.append(launch(name, cmd))
+        # 2. InsultService
+        processes.append(launch("InsultService", f"python3 {BASE_DIR}/InsultService/server.py"))
 
-        # 3. Multiple instancias de InsultFilterService
-        base_port_filter = 50152
-        for i in range(number_filter_services):
-            port = base_port_filter + i
-            name = f"InsultFilterService_{i}"
-            cmd = f"python3 InsultFilterService/server.py {port} {name}"
-            processes.append(launch(name, cmd))
+        # 3. InsultFilterService
+        processes.append(launch("InsultFilterService", f"python3 {BASE_DIR}/InsultFilterService/server.py"))
 
         # 4. Notifier
         processes.append(launch("Notifier", f"python3 {BASE_DIR}/Notifier/notifier.py"))
@@ -50,18 +38,20 @@ def main():
         processes.append(launch("Subscriber", f"python3 {BASE_DIR}/Notifier/subscriber.py"))
 
         # 6. Test InsultService
-        processes.append(launch("Test InsultService", f"python3 {BASE_DIR}/InsultService/test_InsultService.py {number_insult_services} {number_filter_services} {number_petitions_insult} {number_petitions_text}"))
+        processes.append(launch("Test InsultService", f"python3 {BASE_DIR}/tests/test_InsultService.py {number_petitions_insult}"))
 
         # 7. Test InsultFilterService
-        processes.append(launch("Test InsultFilterService", f"python3 {BASE_DIR}/InsultFilterService/test_InsultFilterService.py {number_insult_services} {number_filter_services} {number_petitions_insult} {number_petitions_text}"))
+        processes.append(launch("Test InsultFilterService", f"python3 {BASE_DIR}/tests/test_InsultFilterService.py {number_petitions_text}"))
 
-        print("OK Todas las instancias están en ejecución.")
-        print("STOP Ctrl+C para detener todo.")
+        print("\n Todos los procesos han sido lanzados.")
+        print(" Pulsa Ctrl+C para detener manualmente.")
+
+        # Espera indefinida (los procesos siguen corriendo)
         while True:
             time.sleep(1)
 
     except KeyboardInterrupt:
-        print(" Deteniendo procesos...")
+        print("\n Deteniendo todos los procesos...")
         for p in processes:
             p.terminate()
 
@@ -85,7 +75,7 @@ def main():
         except Exception as e:
             print(f" ERROR al borrar claves en Redis: {e}")
 
-        print(" COMPLETADO.")
+        print(" Finalizado.")
 
 if __name__ == "__main__":
     main()

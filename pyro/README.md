@@ -44,17 +44,28 @@ object via the Name Server.
  ► Decoupling of object location and communication.<br>
 
 
-## Explanation of the implementation
-
-
-
-
-----
-
- <p align="center">
-  <img src="../resources/img/request-reply-communication.PNG" alt="expr" width="350px">
-</p>
-
-### Tests cases & Validations
 
 ## How to run:
+
+Use `installation.sh` and `requirements.txt` to install the services and dependencies.
+We provide `launcher.py` and `launcherStaticScaling.py` to run services.  
+Redis must be running beforehand.
+
+In case you use the `launcher.py` or `launcherStaticScaling.py` of **multiple-node-static**, you have to provide the next arguments:
+
+```bash
+$ python3 ./launcher.py <number_insult_services> <number_filter_services> <number_insults> <number_texts_to_filter>
+# Example; python3 ./launcher.py 1 1 100 10
+```
+
+```bash
+$ python3 ./launcherTests.py <number_insult_services> <number_filter_services> <number_insults> <number_texts_to_filter>
+# Example; python3 ./launcherTests.py 1 1 100 10
+```
+
+## Services
+
+- `InsultService`: Emits insults and handles unique insult storage.
+- `InsultFilterService`: Censors insults in text data.
+- `Notifier`: Manages periodic broadcast of insults to subscribers.
+- `LoadBalancer`: Distributes incoming client requests across multiple service, using RoundRobin algorithm.

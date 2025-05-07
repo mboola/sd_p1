@@ -1,6 +1,7 @@
 import subprocess
 import time
 import os
+import redis
 
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 
@@ -11,32 +12,32 @@ def lanzar(nombre, comando, espera=1):
     return proceso
 
 def main():
-    procesos = []
+    processes = []
 
     try:
         # 0. Name Server
-        procesos.append(lanzar("NameServer", "pyro4-ns"))
+        processes.append(lanzar("NameServer", "pyro4-ns"))
 
         # 1. Redis
-        procesos.append(lanzar("Redis", f"python3 {BASE_DIR}/RedisServer.py"))
+        processes.append(lanzar("Redis", f"python3 {BASE_DIR}/RedisServer.py"))
 
         # 2. InsultService
-        procesos.append(lanzar("InsultService", f"python3 {BASE_DIR}/InsultService/server.py"))
+        processes.append(lanzar("InsultService", f"python3 {BASE_DIR}/InsultService/server.py"))
 
         # 3. InsultFilterService
-        procesos.append(lanzar("InsultFilterService", f"python3 {BASE_DIR}/InsultFilterService/server.py"))
+        processes.append(lanzar("InsultFilterService", f"python3 {BASE_DIR}/InsultFilterService/server.py"))
 
         # 4. Notifier
-        procesos.append(lanzar("Notifier", f"python3 {BASE_DIR}/Notifier/notifier.py"))
+        processes.append(lanzar("Notifier", f"python3 {BASE_DIR}/Notifier/notifier.py"))
 
         # 5. Subscriber
-        procesos.append(lanzar("Subscriber", f"python3 {BASE_DIR}/Notifier/subscriber.py"))
+        processes.append(lanzar("Subscriber", f"python3 {BASE_DIR}/Notifier/subscriber.py"))
 
         # 6. Client InsultService
-        procesos.append(lanzar("Client InsultService", f"python3 {BASE_DIR}/InsultService/client.py"))
+        processes.append(lanzar("Client InsultService", f"python3 {BASE_DIR}/InsultService/client.py"))
 
         # 7. Client InsultFilterService
-        procesos.append(lanzar("Client InsultFilterService", f"python3 {BASE_DIR}/InsultFilterService/client.py"))
+        processes.append(lanzar("Client InsultFilterService", f"python3 {BASE_DIR}/InsultFilterService/client.py"))
 
         print("\n Todos los procesos han sido lanzados.")
         print(" Pulsa Ctrl+C para detener manualmente.")
@@ -47,8 +48,29 @@ def main():
 
     except KeyboardInterrupt:
         print("\n Deteniendo todos los procesos...")
-        for p in procesos:
+        for p in processes:
             p.terminate()
+
+        print("🧹 Killing NameServer...")
+        subprocess.call("pkill -f pyro4-ns", shell=True)
+
+        print(" Limpiando Redis...")
+        try:
+            r = redis.Redis(host='localhost', port=6379, decode_responses=True)
+
+            insults_count = r.scard("insults")
+            texts_count = r.hlen("filtered_texts")
+            text_id = r.get("filtered_texts_id")
+
+            r.delete("insults", "filtered_texts", "filtered_texts_id")
+
+            print(f" ELIMINAR insults: {insults_count} elementos eliminados.")
+            print(f" ELIMINAR filtered_texts: {texts_count} textos eliminados.")
+            print(f" ELIMINAR filtered_texts_id: {text_id} contador eliminado.")
+
+        except Exception as e:
+            print(f" ERROR al borrar claves en Redis: {e}")
+
         print(" Finalizado.")
 
 if __name__ == "__main__":

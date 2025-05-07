@@ -1,5 +1,5 @@
 
-# Implementation and Evaluation of Rabbit MQ (Message Queue) https://www.cloudamqp.com/blog/part1-rabbitmq-for-beginners-what-is-rabbitmq.html
+# Implementation and Evaluation of Rabbit MQ (Message Queue)
 
 Distributed applications are those that run on multiple computers within a network at the same time. This type of software is common in laboratory systems requiring cooperation between different components. However, writing distributed applications can be complex, especially for non-experts.
 
@@ -75,14 +75,18 @@ This model enables asynchronous and decoupled communication, where the sender do
  ► Scalability and flexibility in distributed system design.<br>
  ► Supports multiple communication patterns (fanout, direct, topic).<br>
 
-
-## Explanation of the implementation
-
-
-
-
-----
-
-### Tests cases & Validations
+ <br>
 
 ## How to run:
+
+
+## Services
+
+- `InsultService`: Emits insults and handles unique insult storage.
+- `InsultFilterService`: Censors insults in text data.
+- `Notifier`: Manages periodic broadcast of insults to subscribers.
+
+
+### References
+
+https://www.cloudamqp.com/blog/part1-rabbitmq-for-beginners-what-is-rabbitmq.html
