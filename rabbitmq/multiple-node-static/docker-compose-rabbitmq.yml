@@ -8,8 +8,8 @@ services:
       - "5672:5672"     # Puerto para conexión de clientes (pika, etc)
       - "15672:15672"   # Puerto para UI web
     environment:
-      RABBITMQ_DEFAULT_USER: guest
-      RABBITMQ_DEFAULT_PASS: guest
+      RABBITMQ_DEFAULT_USER: ar
+      RABBITMQ_DEFAULT_PASS: sar
     restart: unless-stopped
 
 

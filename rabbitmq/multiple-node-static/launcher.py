@@ -1,7 +1,10 @@
+#python3 launcher.py <number_insult_services> <number_filter_services> <number_insults> <number_texts_to_filter>
+
 import subprocess
 import time
 import os
 import redis
+import sys
 
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 
@@ -15,6 +18,11 @@ def main():
     processes = []
 
     try:
+        number_insult_services = int(sys.argv[1])
+        number_filter_services = int(sys.argv[2])
+        number_petitions_insult = int(sys.argv[3])
+        number_petitions_text = int(sys.argv[4])
+
         # 0. Name Server
         processes.append(launch("NameServer", "pyro4-ns"))
 
@@ -25,7 +33,6 @@ def main():
         # processes.append(launch("RabbitMQ", "rabbitmq-server"))
 
         # 3. Multiple InsultService instances
-        number_insult_services = 2
         base_port_insult = 49152
         for i in range(number_insult_services):
             port = base_port_insult + i
@@ -34,7 +41,6 @@ def main():
             processes.append(launch(name, cmd))
 
         # 4. Multiple InsultFilterService instances
-        number_filter_services = 2
         base_port_filter = 50152
         for i in range(number_filter_services):
             port = base_port_filter + i
@@ -51,8 +57,8 @@ def main():
         #processes.append(launch("Client RabbitMQ - Texts", f"python3 {BASE_DIR}/InsultFilterService/client.py"))
 
         # 7. Tests
-        processes.append(launch("Test RabbitMQ - Insults", f"python3 {BASE_DIR}/InsultService/test_insultService.py"))
-        processes.append(launch("Test RabbitMQ - Texts", f"python3 {BASE_DIR}/InsultFilterService/test_insultFilterService.py"))
+        processes.append(launch("Test RabbitMQ - Insults", f"python3 {BASE_DIR}/InsultService/test_insultService.py {number_insult_services} {number_filter_services} {number_petitions_insult} {number_petitions_text}"))
+        processes.append(launch("Test RabbitMQ - Texts", f"python3 {BASE_DIR}/InsultFilterService/test_insultFilterService.py {number_insult_services} {number_filter_services} {number_petitions_insult} {number_petitions_text}"))
 
         print("✅ All services are running.")
         print("🛑 Press Ctrl+C to stop everything.")
@@ -63,6 +69,9 @@ def main():
         print("🧹 Stopping all processes...")
         for p in processes:
             p.terminate()
+
+        print("🧹 Killing NameServer...")
+        subprocess.call("pkill -f pyro4-ns", shell=True)
 
         print("🧹 Cleaning Redis keys...")
         try:
