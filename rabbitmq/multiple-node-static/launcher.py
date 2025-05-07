@@ -62,6 +62,9 @@ def main():
 
         print("✅ All services are running.")
         print("🛑 Press Ctrl+C to stop everything.")
+        
+        #raise KeyboardInterrupt
+
         while True:
             time.sleep(1)
 
