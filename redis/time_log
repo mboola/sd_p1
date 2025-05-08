@@ -1,4 +1,8 @@
-Time with '1' nodes and '100' petitions.
-Time with '1' nodes and '100' petitions.
-Time with '1' nodes and '100' petitions.
-Time with '1' nodes and '100' petitions.
+Time with '4' nodes and '100' petitions.
+Total time: 0.14 seconds
+Time with '4' nodes and '200' petitions.
+Total time: 0.34 seconds
+Time with '2' nodes and '1000' petitions.
+Total time: 1.25 seconds
+Time with '3' nodes and '5000' petitions.
+Total time: 4.60 seconds

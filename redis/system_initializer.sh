@@ -25,21 +25,21 @@ fi
 sudo docker run --name InsultRedis -d -p 6379:6379 redis
 
 # Open new node with Insult Producer
-python3 InsultClient.py & > /dev/null
+python3 InsultClient.py & 
 insult_producer=$(echo $!)
 
 # Open new nodes with Suscribers
-python3 Subscriber.py & > /dev/null
+python3 Subscriber.py & 
 subscriber1=$(echo $!)
-python3 Subscriber.py & > /dev/null
+python3 Subscriber.py & 
 subscriber2=$(echo $!)
 
 # Open new node with Event Publisher
-python3 EventPublisher.py & > /dev/null
+python3 EventPublisher.py & 
 event_publisher=$(echo $!)
 
 # Open new node with Insult Filter Producer
-python3 InsultFilterClient.py & > /dev/null
+python3 InsultFilterClient.py "$petitions" &
 insult_filter_producer=$(echo $!)
 
 echo "Time with '"${nodes}"' nodes and '"${petitions}"' petitions." 1>> time_log
@@ -47,22 +47,24 @@ echo "Time with '"${nodes}"' nodes and '"${petitions}"' petitions." 1>> time_log
 insult_filter_pids=()
 
 for ((i=0; i<$nodes; i++)); do
-	python3 InsultFilterService.py "$petitions" & > /dev/null
+	python3 InsultFilterService.py "$petitions" &
 	pid=$!
 	insult_filter_pids+=("$pid")
 done
 
 # Open new node that checks end of test
-python3 EndChecker.py & 1>> time_log
+python3 EndChecker.py 1>> time_log &
 end_checker=$(echo $!)
 
 wait $end_checker
 
-kill $insult_producer
+echo "I end end checker"
+
+wait $insult_producer
 kill $subscriber1
 kill $subscriber2
 kill $event_publisher
-kill $insult_filter_producer
+wait $insult_filter_producer
 
 for pid in "${insult_filter_pids[@]}"; do
     kill $pid

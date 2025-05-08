@@ -24,5 +24,6 @@ while True:
 		print(f"Text sent: '{new_text}'")
 		server.rpush(result_queue, new_text)
 		length = server.llen(result_queue)
+		print(length)
 		if (length >= petitions):
 			server.publish("end_condition_channel", "Ended!")
