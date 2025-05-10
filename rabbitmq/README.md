@@ -79,13 +79,16 @@ This model enables asynchronous and decoupled communication, where the sender do
 
 ## How to run:
 
+**1.** Dependencies, containers and frameworks installation execute `installation.sh` with sudo<br>
+**2.** Deploy:
+ `launcher.py`, using the command `python3 python3 <number_insult_services> <number_filter_services> <number_insults> <number_texts_to_filter>` for multiple-node-static, and `python3 launcher.py` for the single-node.<br>
+ You will see all the actions in the shell.
 
 ## Services
 
 - `InsultService`: Emits insults and handles unique insult storage.
 - `InsultFilterService`: Censors insults in text data.
 - `Notifier`: Manages periodic broadcast of insults to subscribers.
-
 
 ### References
 

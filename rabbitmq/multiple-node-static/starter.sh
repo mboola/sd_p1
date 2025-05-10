@@ -1,5 +1,23 @@
 #!/bin/bash
 
+if [ "$EUID" -ne 0 ]; then
+  echo "Este script debe ejecutarse como root o con sudo."
+  exit 1
+fi
+
+if [ "$(id -u)" -eq 0 ]; then
+  SUDO=""
+else
+  SUDO="sudo"
+fi
+
+$SUDO bash ../installation.sh
+
+if [ $? -ne 0 ]; then
+  echo "Fallo al ejecutar installation.sh abortando..."
+  exit 1
+fi
+
 #python3 launcher.py <number_insult_services> <number_filter_services> <number_insults> <number_texts_to_filter>
 
 # Insult services:

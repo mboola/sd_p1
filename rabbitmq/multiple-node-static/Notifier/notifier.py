@@ -10,6 +10,8 @@ logging.basicConfig(
     format="%(asctime)s [%(levelname)s] %(message)s"
 )
 
+broadcast_process = None
+
 @Pyro4.behavior(instance_mode="single")
 class Notifier:
     def __init__(self, subscribers):
@@ -29,6 +31,13 @@ class Notifier:
         if subscriber_uri in self.subscribers:
             self.subscribers.remove(subscriber_uri)
             logging.info(f" Suscriptor eliminado: {subscriber_uri}")
+
+    @Pyro4.expose
+    def stop_broadcast(self):
+        global broadcast_process
+        if broadcast_process:
+            broadcast_process.terminate()
+            logging.info("Proceso de broadcasting detenido")
 
 def broadcast_loop(subscribers):
     r = redis.Redis(host='localhost', port=6379, decode_responses=True)
@@ -50,6 +59,7 @@ def broadcast_loop(subscribers):
         time.sleep(5)
 
 def main():
+    global broadcast_process
     with Manager() as manager:
         subscribers = manager.list()
 
@@ -60,8 +70,8 @@ def main():
         ns.register("Notifier", uri)
         logging.info(f"Notifier registrado en {uri}")
 
-        p = Process(target=broadcast_loop, args=(subscribers,), daemon=True)
-        p.start()
+        broadcast_process = Process(target=broadcast_loop, args=(subscribers,), daemon=False)
+        broadcast_process.start()
 
         daemon.requestLoop()
 
