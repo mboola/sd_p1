@@ -14,10 +14,10 @@ sudo docker run --name InsultRabbitmq -d -p 5672:5672 -p 15672:15672 rabbitmq:ma
 
 sleep 5
 
-sudo docker exec InsultRabbitmq rabbitmqctl add_user ar sar
+#sudo docker exec InsultRabbitmq rabbitmqctl add_user ar sar
 sleep 1
 
-sudo docker exec InsultRabbitmq rabbitmqctl set_permissions -p / ar ".*" ".*" ".*"
+#sudo docker exec InsultRabbitmq rabbitmqctl set_permissions -p / ar ".*" ".*" ".*"
 
 sleep 1
 
@@ -33,12 +33,12 @@ sleep 3
 #redis_observer=$(echo $!)
 
 # Then we deploy the autoscaler
-gnome-terminal --title="Autoscaler" -- bash -c "python3 autoscaler.py" &
+#gnome-terminal --title="Autoscaler" -- bash -c "python3 autoscaler.py > autoescaler_log" &
 
 # Here we must execute clients
-gnome-terminal --title="Client" -- bash -c "python3 InsultService/client.py 10000 > time_client"
+#gnome-terminal --title="Client" -- bash -c "python3 InsultService/client.py 10000 > time_client"
 
-sleep 100
+sleep 200
 
 kill $name_server
 #kill $redis_observer

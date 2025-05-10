@@ -80,14 +80,14 @@ class InsultFilterService:
 				print("Queue declared: text_queue")
 
 				def callback(ch, method, properties, body):
-					print(f"Message received: {body}")
+					#print(f"Message received: {body}")
 					try:
 						data = json.loads(body)
 						text = data.get("text")
 						if text:
 							self.add_text(text)
 							ch.basic_ack(delivery_tag=method.delivery_tag)
-							print(f"Text processed: {text}")
+							#print(f"Text processed: {text}")
 					except Exception:
 						print("Error in callback:")
 						traceback.print_exc()

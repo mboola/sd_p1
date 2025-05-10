@@ -31,10 +31,10 @@ class InsultService:
 			insult = insult.lower()
 			if not self.r.sismember("insults", insult):
 				self.r.sadd("insults", insult)
-				logging.info(f"Insult added: {insult}")
+				#logging.info(f"Insult added: {insult}")
 				results.append(f"Insult registered: {insult}")
 			else:
-				logging.info(f"Insult already exists: {insult}")
+				#logging.info(f"Insult already exists: {insult}")
 				results.append(f"Insult already registered: {insult}")
 		return results
 
@@ -57,14 +57,14 @@ class InsultService:
 				print("Queue declared: insult_queue")
 
 				def callback(ch, method, properties, body):
-					print(f"Message received: {body}")
+					#print(f"Message received: {body}")
 					try:
 						data = json.loads(body)
 						insult = data.get("insult")
 						if insult:
 							self.add_insult(insult)
 							ch.basic_ack(delivery_tag=method.delivery_tag)
-							print(f"Insult processed: {insult}")
+							#print(f"Insult processed: {insult}")
 					except Exception:
 						print("Error in callback:")
 						traceback.print_exc()
