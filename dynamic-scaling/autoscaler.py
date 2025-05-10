@@ -1,11 +1,14 @@
 import subprocess
 import time
 import pika
-import os
+import signal
+import sys
 
 # Configuraciones
 INSULT_QUEUE = "insult_queue"
 TEXT_QUEUE = "text_queue"
+INSULT_NODE = "InsultService"
+FILTER_NODE = "InsultFilterService"
 INSULT_PORT_BASE = 49152
 TEXT_PORT_BASE = 50152
 
@@ -18,76 +21,84 @@ SCALE_DOWN_THRESHOLD = 10
 running_insult_nodes = []  # lista de procesos (Popen)
 running_text_nodes = []
 
+def cleanup(signum, frame):
+	print(f"Received signal {signum}. Cleaning up child processes...")
+	for child in running_insult_nodes:
+		try:
+			child.terminate()
+			child.wait(timeout=5)
+		except Exception as e:
+			print(f"Failed to terminate child: {e}")
+		
+	for child in running_text_nodes:
+		try:
+			child.terminate()
+			child.wait(timeout=5)
+		except Exception as e:
+			print(f"Failed to terminate child: {e}")
+	sys.exit(0)
+    
+signal.signal(signal.SIGTERM, cleanup)
+signal.signal(signal.SIGINT, cleanup)  # Optional: handle Ctrl+C too
+
 def get_queue_backlog(queue_name):
-    try:
-        credentials = pika.PlainCredentials("ar", "sar")
-        parameters = pika.ConnectionParameters("localhost", credentials=credentials)
-        connection = pika.BlockingConnection(parameters)
-        channel = connection.channel()
-        queue = channel.queue_declare(queue=queue_name, passive=True)
-        count = queue.method.message_count
-        connection.close()
-        return count
-    except Exception as e:
-        print(f"[ERROR] No se pudo consultar la cola {queue_name}: {e}")
-        return -1
+	try:
+		# Connect to RabbitMQ server
+		credentials = pika.PlainCredentials("ar", "sar")
+		parameters = pika.ConnectionParameters("localhost", credentials=credentials)
+		connection = pika.BlockingConnection(parameters)
+		channel = connection.channel()
 
-def scale_up(service_type):
-    if service_type == "insult":
-        i = len(running_insult_nodes)
-        if i >= MAX_NODES:
-            return
-        port = INSULT_PORT_BASE + i
-        name = f"InsultService_{i}"
-        cmd = f"python3 InsultService/server.py {port} {name}"
-        print(f"[UP] Lanzando {name}")
-        p = subprocess.Popen(cmd, shell=True)
-        running_insult_nodes.append(p)
+		queue = channel.queue_declare(queue=queue_name, passive=True)
+		count = queue.method.message_count
+		connection.close()
+		return count
+	
+	except Exception as e:
+		print(f"[ERROR] No se pudo consultar la cola {queue_name}: {e}")
+		return -1
 
-    elif service_type == "filter":
-        i = len(running_text_nodes)
-        if i >= MAX_NODES:
-            return
-        port = TEXT_PORT_BASE + i
-        name = f"InsultFilterService_{i}"
-        cmd = f"python3 InsultFilterService/server.py {port} {name}"
-        print(f"[UP] Lanzando {name}")
-        p = subprocess.Popen(cmd, shell=True)
-        running_text_nodes.append(p)
+# Function used to scale up nodes
+def scale_up(service_type, node_list, base_port):
+	current_nodes = len(node_list)
 
-def scale_down(service_type):
-    if service_type == "insult" and len(running_insult_nodes) > MIN_NODES:
-        p = running_insult_nodes.pop()
-        p.terminate()
-        print("[DOWN] InsultService eliminado")
+	if current_nodes >= MAX_NODES:
+		return
+	
+	port = base_port + current_nodes
+	name = f"{service_type}_{current_nodes}"
+	cmd = f"python3 {service_type}/server.py {port} {name}"
+	print(f"[UP] Lanzando {name}")
+	p = subprocess.Popen(cmd, shell=True)
 
-    elif service_type == "filter" and len(running_text_nodes) > MIN_NODES:
-        p = running_text_nodes.pop()
-        p.terminate()
-        print("[DOWN] InsultFilterService eliminado")
+	node_list.append(p)
 
-def autoscaler_loop():
-    # arranca con un nodo de cada tipo
-    scale_up("insult")
-    scale_up("filter")
+# Function used to scale down nodes
+def scale_down(service_type, node_list):
+	if len(node_list) > MIN_NODES:
+		p = node_list.pop()
+		p.terminate()
+		print(f"[DOWN] {service_type} eliminado")
 
-    while True:
-        insult_backlog = get_queue_backlog(INSULT_QUEUE)
-        text_backlog = get_queue_backlog(TEXT_QUEUE)
+# arranca con un nodo de cada tipo
+scale_up(INSULT_NODE, running_insult_nodes, INSULT_PORT_BASE)
+scale_up(FILTER_NODE, running_text_nodes, TEXT_PORT_BASE)
 
-        print(f"[INFO] insult_queue: {insult_backlog}, text_queue: {text_backlog}")
+while True:
+	insult_backlog = get_queue_backlog(INSULT_QUEUE)
+	text_backlog = get_queue_backlog(TEXT_QUEUE)
 
-        if insult_backlog > SCALE_UP_THRESHOLD:
-            scale_up("insult")
-        elif insult_backlog < SCALE_DOWN_THRESHOLD:
-            scale_down("insult")
+	print(f"[INFO] insult_queue: {insult_backlog}, text_queue: {text_backlog}")
 
-        if text_backlog > SCALE_UP_THRESHOLD:
-            scale_up("filter")
-        elif text_backlog < SCALE_DOWN_THRESHOLD:
-            scale_down("filter")
+	if insult_backlog > SCALE_UP_THRESHOLD:
+		scale_up(INSULT_NODE, running_insult_nodes, INSULT_PORT_BASE)
+	elif insult_backlog < SCALE_DOWN_THRESHOLD:
+		scale_down(INSULT_NODE, running_insult_nodes)
 
-        time.sleep(SCALE_INTERVAL)
+	if text_backlog > SCALE_UP_THRESHOLD:
+		scale_up(FILTER_NODE, running_text_nodes, TEXT_PORT_BASE)
+	elif text_backlog < SCALE_DOWN_THRESHOLD:
+		scale_down(FILTER_NODE, running_text_nodes)
 
-if __name__ == "__main__":
-    autoscaler_loop()
+	time.sleep(SCALE_INTERVAL)
+

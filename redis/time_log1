@@ -1,0 +1,40 @@
+Time with '1' nodes and '100' petitions.
+Total time: 0.18 seconds
+Time with '2' nodes and '100' petitions.
+Total time: 0.05 seconds
+Time with '3' nodes and '100' petitions.
+Total time: 0.12 seconds
+Time with '4' nodes and '100' petitions.
+Total time: 0.06 seconds
+Time with '1' nodes and '200' petitions.
+Total time: 0.45 seconds
+Time with '2' nodes and '200' petitions.
+Total time: 0.17 seconds
+Time with '3' nodes and '200' petitions.
+Total time: 0.19 seconds
+Time with '4' nodes and '200' petitions.
+Total time: 0.22 seconds
+Time with '1' nodes and '500' petitions.
+Total time: 0.80 seconds
+Time with '2' nodes and '500' petitions.
+Total time: 0.56 seconds
+Time with '3' nodes and '500' petitions.
+Total time: 0.33 seconds
+Time with '4' nodes and '500' petitions.
+Total time: 0.20 seconds
+Time with '1' nodes and '1000' petitions.
+Total time: 1.80 seconds
+Time with '2' nodes and '1000' petitions.
+Total time: 1.31 seconds
+Time with '3' nodes and '1000' petitions.
+Total time: 0.90 seconds
+Time with '4' nodes and '1000' petitions.
+Total time: 0.94 seconds
+Time with '1' nodes and '5000' petitions.
+Total time: 9.50 seconds
+Time with '2' nodes and '5000' petitions.
+Total time: 8.77 seconds
+Time with '3' nodes and '5000' petitions.
+Total time: 8.85 seconds
+Time with '4' nodes and '5000' petitions.
+Total time: 8.41 seconds
