@@ -1,59 +1,47 @@
-Insult service running at port 49153 with name InsultService_1
+Insult service running at port 49154 with name InsultService_2
 [Consumer] Process started
 Connecting to RabbitMQ...
 Connection established.
 Queue declared: insult_queue
 [READY] Waiting for messages...
-Insult service running at port 49153 with name InsultService_1
+Insult service running at port 49154 with name InsultService_2
 [Consumer] Process started
 Connecting to RabbitMQ...
 Connection established.
 Queue declared: insult_queue
 [READY] Waiting for messages...
-Insult service running at port 49153 with name InsultService_1
+Insult service running at port 49154 with name InsultService_2
 [Consumer] Process started
 Connecting to RabbitMQ...
 Connection established.
 Queue declared: insult_queue
 [READY] Waiting for messages...
-Insult service running at port 49153 with name InsultService_1
+Insult service running at port 49154 with name InsultService_2
 [Consumer] Process started
 Connecting to RabbitMQ...
 Connection established.
 Queue declared: insult_queue
 [READY] Waiting for messages...
-Insult service running at port 49153 with name InsultService_1
+Insult service running at port 49154 with name InsultService_2
 [Consumer] Process started
 Connecting to RabbitMQ...
 Connection established.
 Queue declared: insult_queue
 [READY] Waiting for messages...
-Insult service running at port 49153 with name InsultService_1
+Insult service running at port 49154 with name InsultService_2
 [Consumer] Process started
 Connecting to RabbitMQ...
 Connection established.
 Queue declared: insult_queue
 [READY] Waiting for messages...
-Insult service running at port 49153 with name InsultService_1
+Insult service running at port 49154 with name InsultService_2
 [Consumer] Process started
 Connecting to RabbitMQ...
 Connection established.
 Queue declared: insult_queue
 [READY] Waiting for messages...
-Insult service running at port 49153 with name InsultService_1
-[Consumer] Process started
-Connecting to RabbitMQ...
-Connection established.
-Queue declared: insult_queue
-[READY] Waiting for messages...
-Insult service running at port 49153 with name InsultService_1
-[Consumer] Process started
-Connecting to RabbitMQ...
-Connection established.
-Queue declared: insult_queue
-[READY] Waiting for messages...
-Insult service running at port 49153 with name InsultService_1
-Insult service running at port 49153 with name InsultService_1
+Insult service running at port 49154 with name InsultService_2
+Insult service running at port 49154 with name InsultService_2
 [Consumer] Process started
 Connecting to RabbitMQ...
 Connection established.

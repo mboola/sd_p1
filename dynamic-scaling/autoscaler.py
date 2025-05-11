@@ -4,6 +4,8 @@ import pika
 import signal
 import sys
 import os
+import math
+import threading
 
 # Configuraciones
 INSULT_QUEUE = "insult_queue"
@@ -13,14 +15,14 @@ FILTER_NODE = "InsultFilterService"
 INSULT_PORT_BASE = 49152
 TEXT_PORT_BASE = 50152
 
-MAX_NODES = 6
+MAX_NODES = 16
 MIN_NODES = 1
 SCALE_INTERVAL = 5  # segundos
 SCALE_UP_THRESHOLD = 300
 SCALE_DOWN_THRESHOLD = 10
 
 running_insult_nodes = []  # lista de procesos (Popen)
-running_text_nodes = []
+running_filter_nodes = []
 
 def cleanup(signum, frame):
 	print(f"Received signal {signum}. Cleaning up child processes...")
@@ -31,7 +33,7 @@ def cleanup(signum, frame):
 		except Exception as e:
 			print(f"Failed to terminate child: {e}")
 		
-	for child in running_text_nodes:
+	for child in running_filter_nodes:
 		try:
 			child.terminate()
 			child.wait(timeout=5)
@@ -55,12 +57,11 @@ def get_queue_backlog(queue_name):
 		return count
 	
 	except Exception as e:
-		print(f"[ERROR] No se pudo consultar la cola {queue_name}: {e}")
+		#print(f"[ERROR] No se pudo consultar la cola {queue_name}: {e}")
 		return -1
 
 # Function used to scale up nodes
 def scale_up(service_type, node_list, base_port):
-	print("what is happening")
 	current_nodes = len(node_list)
 
 	print(f"Current nodes in {service_type} is {current_nodes}")
@@ -85,27 +86,66 @@ def scale_down(service_type, node_list):
 		os.killpg(p.pid, signal.SIGTERM)
 		print(f"[DOWN] {service_type} eliminado")
 
+insult_arrival_rate = 1
+filter_arrival_rate = 1
+INSULT_CAPACITY = 487.80
+INSULT_AVERAGE_TIME = 0.00205
+
+def dynamic_scaling_insult():
+	backlog = get_queue_backlog(INSULT_QUEUE)
+	print(f"Backlog: {backlog}, insult rate: {insult_arrival_rate}")
+	return max(1, math.ceil((backlog + insult_arrival_rate * INSULT_AVERAGE_TIME) / INSULT_CAPACITY))
+
+def dynamic_scaling_filter():
+	filter_average_time = 1 # TODO : get filter_average_time
+	filter_capacity = 1 / filter_average_time
+	return max(1, math.ceil((get_queue_backlog(TEXT_QUEUE) + filter_arrival_rate * filter_average_time) / filter_capacity))
+
+# TODO : also calculate filter gamma
+def calculate_arrival_rate():
+	global insult_arrival_rate, filter_arrival_rate
+	insult_backlog = get_queue_backlog(INSULT_QUEUE)
+	filter_backlog = get_queue_backlog(TEXT_QUEUE)
+	while True:
+		time.sleep(1) # wait 1 sec
+		last_insult_backlog = insult_backlog
+		insult_backlog = get_queue_backlog(INSULT_QUEUE)
+		insult_arrival_rate = insult_backlog - last_insult_backlog
+
+		last_filter_backlog = filter_backlog
+		filter_backlog = get_queue_backlog(INSULT_QUEUE)
+		filter_arrival_rate = filter_backlog - last_filter_backlog
+
+# Start thread to calculate gamma
+threading.Thread(target=calculate_arrival_rate, daemon=True).start()
+
 # arranca con un nodo de cada tipo
+current_insult_nodes = 1
+current_filter_nodes = 1
 scale_up(INSULT_NODE, running_insult_nodes, INSULT_PORT_BASE)
-#scale_up(FILTER_NODE, running_text_nodes, TEXT_PORT_BASE)
+scale_up(FILTER_NODE, running_filter_nodes, TEXT_PORT_BASE)
 
 while True:
-	insult_backlog = get_queue_backlog(INSULT_QUEUE)
-	text_backlog = get_queue_backlog(TEXT_QUEUE)
+	insult_nodes = dynamic_scaling_insult()
+	print (f"Insult nodes: {insult_nodes} decided by dynamic scaling, and {current_insult_nodes}")
 
-	print(f"Number of insults: {insult_backlog}")
+	if insult_nodes > current_insult_nodes:
+		for i in range(insult_nodes - current_insult_nodes):
+			scale_up(INSULT_NODE, running_insult_nodes, INSULT_PORT_BASE)
+	elif insult_nodes < current_insult_nodes:
+		for i in range(current_insult_nodes - insult_nodes):
+			scale_down(INSULT_NODE, running_insult_nodes)
+	current_insult_nodes = insult_nodes
 
-	#print(f"[INFO] insult_queue: {insult_backlog}, text_queue: {text_backlog}")
+	filter_nodes = dynamic_scaling_filter()
+	print (f"Insult nodes: {filter_nodes} decided by dynamic scaling, and {current_filter_nodes}")
 
-	if insult_backlog > SCALE_UP_THRESHOLD:
-		scale_up(INSULT_NODE, running_insult_nodes, INSULT_PORT_BASE)
-	elif insult_backlog < SCALE_DOWN_THRESHOLD:
-		scale_down(INSULT_NODE, running_insult_nodes)
-
-	if text_backlog > SCALE_UP_THRESHOLD:
-		scale_up(FILTER_NODE, running_text_nodes, TEXT_PORT_BASE)
-	elif text_backlog < SCALE_DOWN_THRESHOLD:
-		scale_down(FILTER_NODE, running_text_nodes)
+	if filter_nodes > current_filter_nodes:
+		for i in range(filter_nodes - current_filter_nodes):
+			scale_up(INSULT_NODE, running_filter_nodes, INSULT_PORT_BASE)
+	elif filter_nodes < current_filter_nodes:
+		for i in range(current_filter_nodes - filter_nodes):
+			scale_down(INSULT_NODE, running_filter_nodes)
+	current_filter_nodes = filter_nodes
 
 	time.sleep(SCALE_INTERVAL)
-
