@@ -71,21 +71,23 @@ def scale_up(service_type, node_list, base_port):
 	port = base_port + current_nodes
 	name = f"{service_type}_{current_nodes}"
 	print(f"[UP] Lanzando {name}")
-	p = subprocess.Popen(['python3', f"{service_type}/server.py", f"{port}", f"{name}"])
+	p = subprocess.Popen(
+		['python3', f"{service_type}/server.py", f"{port}", f"{name}"],
+		preexec_fn = os.setsid)
 	node_list.append(p)
 
 # Function used to scale down nodes
 def scale_down(service_type, node_list):
 	if len(node_list) > MIN_NODES:
-		pid = node_list.pop()
-		print(f"[DOWN] trying to kill {pid}")
+		p = node_list.pop()
+		print(f"[DOWN] trying to kill {p.pid}")
 
-		os.killpg(pid.p, signal.SIGTERM)
+		os.killpg(p.pid, signal.SIGTERM)
 		print(f"[DOWN] {service_type} eliminado")
 
 # arranca con un nodo de cada tipo
 scale_up(INSULT_NODE, running_insult_nodes, INSULT_PORT_BASE)
-scale_up(FILTER_NODE, running_text_nodes, TEXT_PORT_BASE)
+#scale_up(FILTER_NODE, running_text_nodes, TEXT_PORT_BASE)
 
 while True:
 	insult_backlog = get_queue_backlog(INSULT_QUEUE)
