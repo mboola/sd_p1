@@ -506,3 +506,129 @@ pika.exceptions.IncompatibleProtocolError: StreamLostError: ('Transport indicate
 2025-05-10 23:24:42,211 [INFO] AMQPConnectionWorkflow - reporting success: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7f05d85afe90> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
 2025-05-10 23:24:42,211 [INFO] Connection workflow succeeded: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7f05d85afe90> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
 2025-05-10 23:24:42,212 [INFO] Created channel=1
+2025-05-11 10:18:05,909 [INFO] Pika version 1.3.2 connecting to ('::1', 5672, 0, 0)
+2025-05-11 10:18:05,911 [INFO] Socket connected: <socket.socket fd=10, family=10, type=1, proto=6, laddr=('::1', 35018, 0, 0), raddr=('::1', 5672, 0, 0)>
+2025-05-11 10:18:05,916 [INFO] Streaming transport linked up: (<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7f93c038ffd0>, _StreamingProtocolShim: <SelectConnection PROTOCOL transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7f93c038ffd0> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>).
+2025-05-11 10:18:05,920 [INFO] InsultFilterService_0 registered at PYRO:obj_c1e27ccc42314857919b638562c7ddd9@localhost:50152
+2025-05-11 10:18:05,928 [INFO] AMQPConnector - reporting success: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7f93c038ffd0> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+2025-05-11 10:18:05,928 [INFO] AMQPConnectionWorkflow - reporting success: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7f93c038ffd0> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+2025-05-11 10:18:05,929 [INFO] Connection workflow succeeded: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7f93c038ffd0> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+2025-05-11 10:18:05,930 [INFO] Created channel=1
+2025-05-11 10:20:55,035 [INFO] Pika version 1.3.2 connecting to ('::1', 5672, 0, 0)
+2025-05-11 10:20:55,035 [INFO] Socket connected: <socket.socket fd=10, family=10, type=1, proto=6, laddr=('::1', 58446, 0, 0), raddr=('::1', 5672, 0, 0)>
+2025-05-11 10:20:55,037 [INFO] Streaming transport linked up: (<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7f5876efc5d0>, _StreamingProtocolShim: <SelectConnection PROTOCOL transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7f5876efc5d0> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>).
+2025-05-11 10:20:55,039 [INFO] InsultFilterService_0 registered at PYRO:obj_69390759e75042798d39edde2bba6641@localhost:50152
+2025-05-11 10:20:55,041 [INFO] AMQPConnector - reporting success: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7f5876efc5d0> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+2025-05-11 10:20:55,041 [INFO] AMQPConnectionWorkflow - reporting success: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7f5876efc5d0> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+2025-05-11 10:20:55,041 [INFO] Connection workflow succeeded: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7f5876efc5d0> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+2025-05-11 10:20:55,042 [INFO] Created channel=1
+2025-05-11 10:23:46,908 [INFO] Pika version 1.3.2 connecting to ('::1', 5672, 0, 0)
+2025-05-11 10:23:46,909 [INFO] Socket connected: <socket.socket fd=10, family=10, type=1, proto=6, laddr=('::1', 38118, 0, 0), raddr=('::1', 5672, 0, 0)>
+2025-05-11 10:23:46,910 [INFO] Streaming transport linked up: (<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7f9cc5dfc350>, _StreamingProtocolShim: <SelectConnection PROTOCOL transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7f9cc5dfc350> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>).
+2025-05-11 10:23:46,911 [INFO] InsultFilterService_0 registered at PYRO:obj_2ba95791f8b64b3ca6441ebd476e6981@localhost:50152
+2025-05-11 10:23:46,915 [INFO] AMQPConnector - reporting success: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7f9cc5dfc350> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+2025-05-11 10:23:46,916 [INFO] AMQPConnectionWorkflow - reporting success: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7f9cc5dfc350> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+2025-05-11 10:23:46,916 [INFO] Connection workflow succeeded: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7f9cc5dfc350> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+2025-05-11 10:23:46,916 [INFO] Created channel=1
+2025-05-11 10:27:55,559 [INFO] Pika version 1.3.2 connecting to ('::1', 5672, 0, 0)
+2025-05-11 10:27:55,560 [INFO] Socket connected: <socket.socket fd=10, family=10, type=1, proto=6, laddr=('::1', 34988, 0, 0), raddr=('::1', 5672, 0, 0)>
+2025-05-11 10:27:55,562 [INFO] Streaming transport linked up: (<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7f635c300310>, _StreamingProtocolShim: <SelectConnection PROTOCOL transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7f635c300310> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>).
+2025-05-11 10:27:55,566 [INFO] InsultFilterService_0 registered at PYRO:obj_ac7d1d5bc9494348b14026515bdad64a@localhost:50152
+2025-05-11 10:27:55,568 [INFO] AMQPConnector - reporting success: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7f635c300310> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+2025-05-11 10:27:55,568 [INFO] AMQPConnectionWorkflow - reporting success: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7f635c300310> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+2025-05-11 10:27:55,569 [INFO] Connection workflow succeeded: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7f635c300310> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+2025-05-11 10:27:55,574 [INFO] Created channel=1
+2025-05-11 10:28:16,112 [INFO] Pika version 1.3.2 connecting to ('::1', 5672, 0, 0)
+2025-05-11 10:28:16,113 [INFO] Socket connected: <socket.socket fd=10, family=10, type=1, proto=6, laddr=('::1', 54864, 0, 0), raddr=('::1', 5672, 0, 0)>
+2025-05-11 10:28:16,114 [INFO] Streaming transport linked up: (<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7f6e6023c150>, _StreamingProtocolShim: <SelectConnection PROTOCOL transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7f6e6023c150> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>).
+2025-05-11 10:28:16,118 [INFO] InsultFilterService_0 registered at PYRO:obj_df6d354309104675ae1777fbcb53bdf1@localhost:50152
+2025-05-11 10:28:16,119 [INFO] AMQPConnector - reporting success: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7f6e6023c150> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+2025-05-11 10:28:16,119 [INFO] AMQPConnectionWorkflow - reporting success: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7f6e6023c150> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+2025-05-11 10:28:16,120 [INFO] Connection workflow succeeded: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7f6e6023c150> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+2025-05-11 10:28:16,120 [INFO] Created channel=1
+2025-05-11 10:29:04,129 [INFO] Pika version 1.3.2 connecting to ('::1', 5672, 0, 0)
+2025-05-11 10:29:04,130 [INFO] Socket connected: <socket.socket fd=10, family=10, type=1, proto=6, laddr=('::1', 38728, 0, 0), raddr=('::1', 5672, 0, 0)>
+2025-05-11 10:29:04,131 [INFO] Streaming transport linked up: (<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7efddcdc4090>, _StreamingProtocolShim: <SelectConnection PROTOCOL transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7efddcdc4090> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>).
+2025-05-11 10:29:04,134 [INFO] InsultFilterService_0 registered at PYRO:obj_0e8c8f0b4ea64b609283e15aeb111f7e@localhost:50152
+2025-05-11 10:29:04,137 [INFO] AMQPConnector - reporting success: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7efddcdc4090> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+2025-05-11 10:29:04,137 [INFO] AMQPConnectionWorkflow - reporting success: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7efddcdc4090> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+2025-05-11 10:29:04,137 [INFO] Connection workflow succeeded: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7efddcdc4090> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+2025-05-11 10:29:04,138 [INFO] Created channel=1
+2025-05-11 10:29:44,576 [INFO] Pika version 1.3.2 connecting to ('::1', 5672, 0, 0)
+2025-05-11 10:29:44,577 [INFO] Socket connected: <socket.socket fd=10, family=10, type=1, proto=6, laddr=('::1', 35214, 0, 0), raddr=('::1', 5672, 0, 0)>
+2025-05-11 10:29:44,578 [INFO] Streaming transport linked up: (<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7f3bf6688090>, _StreamingProtocolShim: <SelectConnection PROTOCOL transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7f3bf6688090> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>).
+2025-05-11 10:29:44,582 [INFO] AMQPConnector - reporting success: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7f3bf6688090> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+2025-05-11 10:29:44,582 [INFO] AMQPConnectionWorkflow - reporting success: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7f3bf6688090> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+2025-05-11 10:29:44,582 [INFO] Connection workflow succeeded: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7f3bf6688090> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+2025-05-11 10:29:44,583 [INFO] Created channel=1
+2025-05-11 10:29:44,584 [INFO] InsultFilterService_0 registered at PYRO:obj_f60809f725bd4246a0dece16f8e1ac32@localhost:50152
+2025-05-11 10:30:34,994 [INFO] Pika version 1.3.2 connecting to ('::1', 5672, 0, 0)
+2025-05-11 10:30:34,995 [INFO] Socket connected: <socket.socket fd=10, family=10, type=1, proto=6, laddr=('::1', 44082, 0, 0), raddr=('::1', 5672, 0, 0)>
+2025-05-11 10:30:34,996 [INFO] Streaming transport linked up: (<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7f559321ff10>, _StreamingProtocolShim: <SelectConnection PROTOCOL transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7f559321ff10> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>).
+2025-05-11 10:30:35,000 [INFO] AMQPConnector - reporting success: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7f559321ff10> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+2025-05-11 10:30:35,000 [INFO] AMQPConnectionWorkflow - reporting success: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7f559321ff10> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+2025-05-11 10:30:35,000 [INFO] Connection workflow succeeded: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7f559321ff10> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+2025-05-11 10:30:35,000 [INFO] InsultFilterService_0 registered at PYRO:obj_3bfa3505cdfc4847a5d92899868d88a5@localhost:50152
+2025-05-11 10:30:35,001 [INFO] Created channel=1
+2025-05-11 10:31:22,502 [INFO] Pika version 1.3.2 connecting to ('::1', 5672, 0, 0)
+2025-05-11 10:31:22,503 [ERROR] Socket failed to connect: <socket.socket fd=10, family=10, type=1, proto=6, laddr=('::1', 44088, 0, 0)>; error=111 (Connection refused)
+2025-05-11 10:31:22,503 [ERROR] TCP Connection attempt failed: ConnectionRefusedError(111, 'Connection refused'); dest=(<AddressFamily.AF_INET6: 10>, <SocketKind.SOCK_STREAM: 1>, 6, '', ('::1', 5672, 0, 0))
+2025-05-11 10:31:22,503 [ERROR] AMQPConnector - reporting failure: AMQPConnectorSocketConnectError: ConnectionRefusedError(111, 'Connection refused')
+2025-05-11 10:31:22,503 [INFO] Pika version 1.3.2 connecting to ('127.0.0.1', 5672)
+2025-05-11 10:31:22,504 [ERROR] Socket failed to connect: <socket.socket fd=10, family=2, type=1, proto=6, laddr=('127.0.0.1', 39110)>; error=111 (Connection refused)
+2025-05-11 10:31:22,504 [ERROR] TCP Connection attempt failed: ConnectionRefusedError(111, 'Connection refused'); dest=(<AddressFamily.AF_INET: 2>, <SocketKind.SOCK_STREAM: 1>, 6, '', ('127.0.0.1', 5672))
+2025-05-11 10:31:22,504 [ERROR] AMQPConnector - reporting failure: AMQPConnectorSocketConnectError: ConnectionRefusedError(111, 'Connection refused')
+2025-05-11 10:31:22,504 [ERROR] AMQP connection workflow failed: AMQPConnectionWorkflowFailed: 2 exceptions in all; last exception - AMQPConnectorSocketConnectError: ConnectionRefusedError(111, 'Connection refused'); first exception - AMQPConnectorSocketConnectError: ConnectionRefusedError(111, 'Connection refused').
+2025-05-11 10:31:22,504 [ERROR] AMQPConnectionWorkflow - reporting failure: AMQPConnectionWorkflowFailed: 2 exceptions in all; last exception - AMQPConnectorSocketConnectError: ConnectionRefusedError(111, 'Connection refused'); first exception - AMQPConnectorSocketConnectError: ConnectionRefusedError(111, 'Connection refused')
+2025-05-11 10:31:22,504 [ERROR] Connection workflow failed: AMQPConnectionWorkflowFailed: 2 exceptions in all; last exception - AMQPConnectorSocketConnectError: ConnectionRefusedError(111, 'Connection refused'); first exception - AMQPConnectorSocketConnectError: ConnectionRefusedError(111, 'Connection refused')
+2025-05-11 10:31:22,504 [ERROR] Error in _create_connection().
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.11/dist-packages/pika/adapters/blocking_connection.py", line 451, in _create_connection
+    raise self._reap_last_connection_workflow_error(error)
+pika.exceptions.AMQPConnectionError
+2025-05-11 10:32:04,688 [INFO] Pika version 1.3.2 connecting to ('::1', 5672, 0, 0)
+2025-05-11 10:32:04,692 [INFO] Socket connected: <socket.socket fd=10, family=10, type=1, proto=6, laddr=('::1', 59260, 0, 0), raddr=('::1', 5672, 0, 0)>
+2025-05-11 10:32:04,693 [INFO] Streaming transport linked up: (<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7f1d0718ff50>, _StreamingProtocolShim: <SelectConnection PROTOCOL transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7f1d0718ff50> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>).
+2025-05-11 10:32:04,694 [INFO] InsultFilterService_0 registered at PYRO:obj_386ed43ce9f14284b6d60e8fc3b23e36@localhost:50152
+2025-05-11 10:32:04,698 [INFO] AMQPConnector - reporting success: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7f1d0718ff50> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+2025-05-11 10:32:04,699 [INFO] AMQPConnectionWorkflow - reporting success: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7f1d0718ff50> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+2025-05-11 10:32:04,699 [INFO] Connection workflow succeeded: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7f1d0718ff50> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+2025-05-11 10:32:04,699 [INFO] Created channel=1
+2025-05-11 10:39:27,378 [INFO] InsultFilterService_0 registered at PYRO:obj_dfaa6d0b7d864c74bcfdb37a63384120@localhost:50152
+2025-05-11 10:39:27,390 [INFO] Pika version 1.3.2 connecting to ('::1', 5672, 0, 0)
+2025-05-11 10:39:27,391 [INFO] Socket connected: <socket.socket fd=10, family=10, type=1, proto=6, laddr=('::1', 33112, 0, 0), raddr=('::1', 5672, 0, 0)>
+2025-05-11 10:39:27,393 [INFO] Streaming transport linked up: (<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7faae99a0550>, _StreamingProtocolShim: <SelectConnection PROTOCOL transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7faae99a0550> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>).
+2025-05-11 10:39:27,399 [INFO] AMQPConnector - reporting success: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7faae99a0550> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+2025-05-11 10:39:27,400 [INFO] AMQPConnectionWorkflow - reporting success: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7faae99a0550> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+2025-05-11 10:39:27,401 [INFO] Connection workflow succeeded: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7faae99a0550> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+2025-05-11 10:39:27,402 [INFO] Created channel=1
+2025-05-11 10:41:23,092 [INFO] Aborting transport connection: state=1; <socket.socket fd=10, family=10, type=1, proto=6, laddr=('::1', 33112, 0, 0), raddr=('::1', 5672, 0, 0)>
+2025-05-11 10:41:23,093 [INFO] _AsyncTransportBase._initate_abort(): Initiating abrupt asynchronous transport shutdown: state=1; error=None; <socket.socket fd=10, family=10, type=1, proto=6, laddr=('::1', 33112, 0, 0), raddr=('::1', 5672, 0, 0)>
+2025-05-11 10:41:23,094 [INFO] Deactivating transport: state=1; <socket.socket fd=10, family=10, type=1, proto=6, laddr=('::1', 33112, 0, 0), raddr=('::1', 5672, 0, 0)>
+2025-05-11 10:41:23,094 [INFO] AMQP stack terminated, failed to connect, or aborted: opened=True, error-arg=None; pending-error=ConnectionClosedByBroker: (320) "CONNECTION_FORCED - broker forced connection closure with reason 'shutdown'"
+2025-05-11 10:41:23,095 [INFO] Stack terminated due to ConnectionClosedByBroker: (320) "CONNECTION_FORCED - broker forced connection closure with reason 'shutdown'"
+2025-05-11 10:41:23,096 [INFO] Closing transport socket and unlinking: state=3; <socket.socket fd=10, family=10, type=1, proto=6, laddr=('::1', 33112, 0, 0), raddr=('::1', 5672, 0, 0)>
+2025-05-11 10:41:23,096 [ERROR] Unexpected connection close detected: ConnectionClosedByBroker: (320) "CONNECTION_FORCED - broker forced connection closure with reason 'shutdown'"
+2025-05-11 10:50:52,714 [INFO] Pika version 1.3.2 connecting to ('::1', 5672, 0, 0)
+2025-05-11 10:50:52,715 [INFO] Socket connected: <socket.socket fd=10, family=10, type=1, proto=6, laddr=('::1', 60044, 0, 0), raddr=('::1', 5672, 0, 0)>
+2025-05-11 10:50:52,717 [INFO] Streaming transport linked up: (<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7feec2590250>, _StreamingProtocolShim: <SelectConnection PROTOCOL transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7feec2590250> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>).
+2025-05-11 10:50:52,718 [INFO] InsultFilterService_0 registered at PYRO:obj_e1f276b20b5c40379d467b2b5956e51f@localhost:50152
+2025-05-11 10:50:52,722 [INFO] AMQPConnector - reporting success: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7feec2590250> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+2025-05-11 10:50:52,722 [INFO] AMQPConnectionWorkflow - reporting success: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7feec2590250> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+2025-05-11 10:50:52,722 [INFO] Connection workflow succeeded: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7feec2590250> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+2025-05-11 10:50:52,723 [INFO] Created channel=1
+2025-05-11 10:53:21,919 [INFO] Aborting transport connection: state=1; <socket.socket fd=10, family=10, type=1, proto=6, laddr=('::1', 60044, 0, 0), raddr=('::1', 5672, 0, 0)>
+2025-05-11 10:53:21,920 [INFO] _AsyncTransportBase._initate_abort(): Initiating abrupt asynchronous transport shutdown: state=1; error=None; <socket.socket fd=10, family=10, type=1, proto=6, laddr=('::1', 60044, 0, 0), raddr=('::1', 5672, 0, 0)>
+2025-05-11 10:53:21,920 [INFO] Deactivating transport: state=1; <socket.socket fd=10, family=10, type=1, proto=6, laddr=('::1', 60044, 0, 0), raddr=('::1', 5672, 0, 0)>
+2025-05-11 10:53:21,921 [INFO] AMQP stack terminated, failed to connect, or aborted: opened=True, error-arg=None; pending-error=ConnectionClosedByBroker: (320) "CONNECTION_FORCED - broker forced connection closure with reason 'shutdown'"
+2025-05-11 10:53:21,921 [INFO] Stack terminated due to ConnectionClosedByBroker: (320) "CONNECTION_FORCED - broker forced connection closure with reason 'shutdown'"
+2025-05-11 10:53:21,922 [INFO] Closing transport socket and unlinking: state=3; <socket.socket fd=10, family=10, type=1, proto=6, laddr=('::1', 60044, 0, 0), raddr=('::1', 5672, 0, 0)>
+2025-05-11 10:53:21,922 [ERROR] Unexpected connection close detected: ConnectionClosedByBroker: (320) "CONNECTION_FORCED - broker forced connection closure with reason 'shutdown'"
+2025-05-11 11:01:08,117 [INFO] InsultFilterService_0 registered at PYRO:obj_4ef8d34477024edab4281c00a1eeb58b@localhost:50152
+2025-05-11 11:01:08,116 [INFO] Pika version 1.3.2 connecting to ('::1', 5672, 0, 0)
+2025-05-11 11:01:08,119 [INFO] Socket connected: <socket.socket fd=10, family=10, type=1, proto=6, laddr=('::1', 43636, 0, 0), raddr=('::1', 5672, 0, 0)>
+2025-05-11 11:01:08,120 [INFO] Streaming transport linked up: (<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7fc061dfc050>, _StreamingProtocolShim: <SelectConnection PROTOCOL transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7fc061dfc050> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>).
+2025-05-11 11:01:08,126 [INFO] AMQPConnector - reporting success: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7fc061dfc050> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+2025-05-11 11:01:08,126 [INFO] AMQPConnectionWorkflow - reporting success: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7fc061dfc050> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+2025-05-11 11:01:08,127 [INFO] Connection workflow succeeded: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7fc061dfc050> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+2025-05-11 11:01:08,127 [INFO] Created channel=1
