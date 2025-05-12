@@ -63,6 +63,18 @@ $ python3 ./launcherTests.py <number_insult_services> <number_filter_services> <
 # Example; python3 ./launcherTests.py 1 1 100 10
 ```
 
+Otherwise if you use the **single-node** you have to provide the next arguments:
+
+```bash
+$ python3 ./launcher.py
+# Example; python3 ./launcher.py
+```
+
+```bash
+$ python3 ./launcherTests.py <number_insults> <number_texts_to_filter>
+# Example; python3 ./launcherTests.py 100 10
+```
+
 ## Services
 
 - `InsultService`: Emits insults and handles unique insult storage.

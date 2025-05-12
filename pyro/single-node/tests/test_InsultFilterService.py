@@ -14,7 +14,7 @@ def main():
 
     start = time.time()
     for i in range(n_pif):
-        texto = f"este texto contiene insulto_{i}"
+        texto = f"{i} este texto contiene insulto_{i}"
         insult_filter_server.add_text(texto)
     end = time.time()
 

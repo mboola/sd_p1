@@ -21,7 +21,7 @@ def main():
 
     start = time.time()
     for i in range(n_pif):
-        text = f"This is a text with insult_{i}"
+        text = f"{i} This is a text with insult_{i}"
         message = json.dumps({"text": text})
         channel.basic_publish(
             exchange='',
