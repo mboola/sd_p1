@@ -4,7 +4,7 @@
 
 # Check that exactly two arguments are provided
 if [ "$#" -ne 2 ]; then
-	echo "Usage: $0 <Nodes 1-4> <Petitions 100-5000>"
+	echo "Usage: $0 <Nodes 1-4> <Petitions 100-20000>"
 	exit 1
 fi
 
@@ -16,8 +16,8 @@ if ! [[ "$nodes" =~ ^[0-9]+$ ]] || [ "$nodes" -lt 1 ] || [ "$nodes" -gt 4 ]; the
 	exit 1
 fi
 
-if ! [[ "$petitions" =~ ^[0-9]+$ ]] || [ "$petitions" -lt 100 ] || [ "$petitions" -gt 5000 ]; then
-	echo "Error: Petitions must be an integer between 100 and 5000"
+if ! [[ "$petitions" =~ ^[0-9]+$ ]] || [ "$petitions" -lt 100 ] || [ "$petitions" -gt 20000 ]; then
+	echo "Error: Petitions must be an integer between 100 and 20000"
 	exit 1
 fi
 
