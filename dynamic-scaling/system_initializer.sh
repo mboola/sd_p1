@@ -33,12 +33,17 @@ sleep 3
 #redis_observer=$(echo $!)
 
 # Then we deploy the autoscaler
-#gnome-terminal --title="Autoscaler" -- bash -c "python3 autoscaler.py" &
+gnome-terminal --title="Autoscaler" -- bash -c "python3 autoscaler.py" &
+autoscaler=$(echo $!)
+
+sleep 3
 
 # Here we must execute clients
-#gnome-terminal --title="Client" -- bash -c "python3 InsultService/client.py 10000 > time_client"
+gnome-terminal --title="Client" -- bash -c "python3 InsultService/client.py 10000 > time_client"
 
-sleep 200
+
+sleep 100
+wait $autoscaler
 
 kill $name_server
 #kill $redis_observer

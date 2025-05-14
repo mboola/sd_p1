@@ -6,6 +6,7 @@ import sys
 import os
 import math
 import threading
+import matplotlib.pyplot as plt
 
 # Configuraciones
 INSULT_QUEUE = "insult_queue"
@@ -21,8 +22,44 @@ SCALE_INTERVAL = 5  # segundos
 SCALE_UP_THRESHOLD = 300
 SCALE_DOWN_THRESHOLD = 10
 
+# Structs used to store values to generate graph
+insult_service_backlog = []
+insult_service_current_nodes = []
+insult_service_desired_nodes = []
+
+insult_filter_service_backlog = []
+insult_filter_service_current_nodes = []
+insult_filter_service_desired_nodes = []
+
+current_insult_nodes = 1
+current_filter_nodes = 1
+
 running_insult_nodes = []  # lista de procesos (Popen)
 running_filter_nodes = []
+
+def generate_graph():
+	time = [i * 5 for i in range(len(insult_filter_service_backlog))]
+
+	# Create the plot
+	plt.figure(figsize=(10, 6))
+
+	# Plot petitions
+	plt.plot(time, insult_filter_service_backlog, label='Petitions', marker='o', color='blue')
+
+	# Plot nodes
+	plt.plot(time, insult_filter_service_current_nodes, label='Nodes Deployed', marker='s', color='green')
+
+	# Add titles and labels
+	plt.title('Petitions and Nodes Deployed Over Time')
+	plt.xlabel('Time (seconds)')
+	plt.ylabel('Count')
+	plt.legend()
+	plt.grid(True)
+
+	# Show the plot
+	plt.savefig('graph.png', dpi=300)  # You can change the filename and format
+
+	plt.show()
 
 def cleanup(signum, frame):
 	print(f"Received signal {signum}. Cleaning up child processes...")
@@ -39,6 +76,7 @@ def cleanup(signum, frame):
 			child.wait(timeout=5)
 		except Exception as e:
 			print(f"Failed to terminate child: {e}")
+	generate_graph()
 	sys.exit(0)
     
 signal.signal(signal.SIGINT, cleanup)  # Optional: handle Ctrl+C too
@@ -93,15 +131,36 @@ INSULT_AVERAGE_TIME = 0.00205
 
 def dynamic_scaling_insult():
 	backlog = get_queue_backlog(INSULT_QUEUE)
-	print(f"Backlog: {backlog}, insult rate: {insult_arrival_rate}")
-	return max(1, math.ceil((backlog + insult_arrival_rate * INSULT_AVERAGE_TIME) / INSULT_CAPACITY))
+
+	# TODO: add backlog, suposed number of nodes to deploy and current number of nodes deployed
+	# into an array and each position is a SCALE_INTERVAL
+
+	insult_service_backlog.append(backlog)
+	insult_service_current_nodes.append(current_insult_nodes)
+
+	#print(f"Backlog: {backlog}, insult rate: {insult_arrival_rate}")
+	desired_nodes = max(1, math.ceil((backlog + insult_arrival_rate * INSULT_AVERAGE_TIME) / INSULT_CAPACITY))
+	insult_service_desired_nodes.append(desired_nodes)
+
+	return desired_nodes
 
 def dynamic_scaling_filter():
+	backlog = get_queue_backlog(TEXT_QUEUE)
+
+	# TODO: add backlog, suposed number of nodes to deploy and current number of nodes deployed
+	# into an array and each position is a SCALE_INTERVAL
+
+	insult_filter_service_backlog.append(backlog)
+	insult_filter_service_current_nodes.append(current_filter_nodes)
+
 	filter_average_time = 1 # TODO : get filter_average_time
 	filter_capacity = 1 / filter_average_time
-	return max(1, math.ceil((get_queue_backlog(TEXT_QUEUE) + filter_arrival_rate * filter_average_time) / filter_capacity))
 
-# TODO : also calculate filter gamma
+	desired_nodes = max(1, math.ceil((backlog + filter_arrival_rate * filter_average_time) / filter_capacity))
+	insult_filter_service_desired_nodes.append(desired_nodes)
+
+	return desired_nodes
+
 def calculate_arrival_rate():
 	global insult_arrival_rate, filter_arrival_rate
 	insult_backlog = get_queue_backlog(INSULT_QUEUE)
@@ -120,8 +179,6 @@ def calculate_arrival_rate():
 threading.Thread(target=calculate_arrival_rate, daemon=True).start()
 
 # arranca con un nodo de cada tipo
-current_insult_nodes = 1
-current_filter_nodes = 1
 scale_up(INSULT_NODE, running_insult_nodes, INSULT_PORT_BASE)
 scale_up(FILTER_NODE, running_filter_nodes, TEXT_PORT_BASE)
 
