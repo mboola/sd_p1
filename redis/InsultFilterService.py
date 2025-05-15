@@ -16,14 +16,14 @@ while True:
 	text = server.blpop(texts_queue, timeout = 0)
 	if text:
 		new_text = text[1]
-		print(f"Text received: '{new_text}'")
+		#print(f"Text received: '{new_text}'")
 		banned_words = server.lrange(insult_list, 0, -1)
 		words = server.lrange('word_list', 0, -1)  # Get all elements
 		for banned_word in banned_words:
 			new_text = re.sub(banned_word, "CENSORED", new_text, flags=re.IGNORECASE)
-		print(f"Text sent: '{new_text}'")
+		#print(f"Text sent: '{new_text}'")
 		server.rpush(result_queue, new_text)
 		length = server.llen(result_queue)
-		print(length)
+		#print(length)
 		if (length >= petitions):
 			server.publish("end_condition_channel", "Ended!")

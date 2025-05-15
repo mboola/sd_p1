@@ -19,5 +19,5 @@ insults = [
 ]
 
 for i in range(len(insults)):
-	print(f"Adding '{insults[i]}'!")
+	#print(f"Adding '{insults[i]}'!")
 	server.rpush(insult_list, insults[i])

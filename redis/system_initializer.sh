@@ -11,7 +11,7 @@ fi
 nodes=$1
 petitions=$2
 
-if ! [[ "$nodes" =~ ^[0-9]+$ ]] || [ "$nodes" -lt 1 ] || [ "$nodes" -gt 4 ]; then
+if ! [[ "$nodes" =~ ^[0-9]+$ ]] || [ "$nodes" -lt 1 ] || [ "$nodes" -gt 8 ]; then
 	echo "Error: Nodes must be an integer between 1 and 4"
 	exit 1
 fi
