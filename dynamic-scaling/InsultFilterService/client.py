@@ -16,7 +16,6 @@ if isinstance(text_list, str):
     text_list = [text_list]
 
 for i in range(petitions):
-    print(f"Adding text!")
     message = json.dumps({"text": text_list[i % 4]})
     channel.basic_publish(
         exchange='',

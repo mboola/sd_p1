@@ -39,12 +39,13 @@ autoscaler=$(ps -aux | grep autoscaler.py | grep -v grep | awk '{print $2}')
 sleep 3
 
 # Here we must execute clients
-gnome-terminal --title="Client" -- bash -c "python3 InsultService/client.py 10000 > time_client"
+./obtain_metrics.sh "InsultService/client.py"
+echo "InsultService/client.py metrics ended"
 
-./obtain_metrics.sh
-echo "metrics ended"
-
+./obtain_metrics.sh "InsultFilterService/client.py"
+echo "InsultFilterService/client.py metrics ended"
 sleep 10
+
 wait $autoscaler
 
 kill $name_server

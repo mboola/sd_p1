@@ -37,26 +37,28 @@ current_filter_nodes = 1
 running_insult_nodes = []  # lista de procesos (Popen)
 running_filter_nodes = []
 
-def generate_graph():
-	time = [i * 5 for i in range(len(insult_service_backlog))]
+def generate_graph(backlog, current_nodes, desired_nodes, name_file):
+	time = [i * 5 for i in range(len(backlog))]
 
 	# Create the figure and axis objects
 	fig, ax1 = plt.subplots(figsize=(10, 6))
 
 	# Plotting current_petitions on the left y-axis
-	line1, = ax1.plot(time, insult_service_backlog, 'g-', label='Current Petitions')
+	line1, = ax1.plot(time, backlog, 'g-', label='Current Petitions')
 	ax1.set_xlabel('Time (seconds)')
 	ax1.set_ylabel('Current Petitions', color='g')
 	ax1.tick_params(axis='y', labelcolor='g')
 
 	ax2 = ax1.twinx()
-	line2, = ax2.plot(time, insult_service_current_nodes, 'b-', label='Current Nodes')
+	line2, = ax2.plot(time, current_nodes, 'b-', label='Current Nodes')
 	ax2.set_ylabel('Nodes', color='b')
 	ax2.tick_params(axis='y', labelcolor='b')
 
+	ax2.set_ylim(0, 36)
+
 	ax3 = ax1.twinx()
 	ax3.spines['right'].set_position(('outward', 60))  # offset in pixels
-	line3, = ax3.plot(time, insult_service_desired_nodes, 'r--', label='Theoretical Nodes')
+	line3, = ax3.plot(time, desired_nodes, 'r--', label='Theoretical Nodes')
 	ax3.set_ylabel('Theoretical Nodes', color='r')
 	ax3.tick_params(axis='y', labelcolor='r')
 
@@ -71,10 +73,7 @@ def generate_graph():
 	# Improve layout
 	fig.tight_layout()
 
-	plt.savefig("autoscaler_graph.png", dpi=300)  # Change filename/format as needed
-
-	# Show the plot
-	plt.show()
+	plt.savefig(name_file, dpi=300)  # Change filename/format as needed
 
 
 def cleanup(signum, frame):
@@ -92,7 +91,9 @@ def cleanup(signum, frame):
 			child.wait(timeout=5)
 		except Exception as e:
 			print(f"Failed to terminate child: {e}")
-	generate_graph()
+
+	generate_graph(insult_service_backlog, insult_service_current_nodes, insult_service_desired_nodes, "insult_service")
+	generate_graph(insult_filter_service_backlog, insult_filter_service_current_nodes, insult_filter_service_desired_nodes, "insult_filter_service")
 	sys.exit(0)
     
 signal.signal(signal.SIGINT, cleanup)  # Optional: handle Ctrl+C too
@@ -144,6 +145,8 @@ insult_arrival_rate = 1
 filter_arrival_rate = 1
 INSULT_CAPACITY = 487.80
 INSULT_AVERAGE_TIME = 0.001
+TEXT_CAPACITY = 149
+TEXT_AVERAGE_TIME = 0.0067
 
 def dynamic_scaling_insult():
 	backlog = get_queue_backlog(INSULT_QUEUE)
@@ -169,10 +172,7 @@ def dynamic_scaling_filter():
 	insult_filter_service_backlog.append(backlog)
 	insult_filter_service_current_nodes.append(current_filter_nodes)
 
-	filter_average_time = 1 # TODO : get filter_average_time
-	filter_capacity = 1 / filter_average_time
-
-	desired_nodes = max(1, math.ceil((backlog + filter_arrival_rate * filter_average_time) / filter_capacity))
+	desired_nodes = max(1, math.ceil((backlog + filter_arrival_rate * TEXT_AVERAGE_TIME) / TEXT_CAPACITY))
 	insult_filter_service_desired_nodes.append(desired_nodes)
 
 	return desired_nodes
