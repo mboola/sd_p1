@@ -65,3 +65,203 @@ Connecting to RabbitMQ...
 Connection established.
 Queue declared: insult_queue
 [READY] Waiting for messages...
+Insult service running at port 49155 with name InsultService_3
+[Consumer] Process started
+Connecting to RabbitMQ...
+Connection established.
+Queue declared: insult_queue
+[READY] Waiting for messages...
+Insult service running at port 49155 with name InsultService_3
+[Consumer] Process started
+Connecting to RabbitMQ...
+Connection established.
+Queue declared: insult_queue
+[READY] Waiting for messages...
+Insult service running at port 49155 with name InsultService_3
+[Consumer] Process started
+Connecting to RabbitMQ...
+Connection established.
+Queue declared: insult_queue
+[READY] Waiting for messages...
+Insult service running at port 49155 with name InsultService_3
+[Consumer] Process started
+Connecting to RabbitMQ...
+Connection established.
+Queue declared: insult_queue
+[READY] Waiting for messages...
+Insult service running at port 49155 with name InsultService_3
+[Consumer] Process started
+Connecting to RabbitMQ...
+Connection established.
+Queue declared: insult_queue
+[READY] Waiting for messages...
+Insult service running at port 49155 with name InsultService_3
+Traceback (most recent call last):
+  File "/home/milax/SD/sd_p1/dynamic-scaling/InsultService/server.py", line 88, in <module>
+    daemon = Pyro4.Daemon(port=port)
+             ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/milax/SD/sd_p1/dynamic-scaling/venv/lib/python3.11/site-packages/Pyro4/core.py", line 1141, in __init__
+    self.transportServer.init(self, host, port, unixsocket)
+  File "/home/milax/SD/sd_p1/dynamic-scaling/venv/lib/python3.11/site-packages/Pyro4/socketserver/threadpoolserver.py", line 129, in init
+    self.sock = socketutil.createSocket(bind=bind_location,
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/milax/SD/sd_p1/dynamic-scaling/venv/lib/python3.11/site-packages/Pyro4/socketutil.py", line 300, in createSocket
+    sock.bind(bind)
+OSError: [Errno 98] Address already in use
+Insult service running at port 49155 with name InsultService_3
+[Consumer] Process started
+Connecting to RabbitMQ...
+Connection established.
+Queue declared: insult_queue
+[READY] Waiting for messages...
+Insult service running at port 49155 with name InsultService_3
+Traceback (most recent call last):
+  File "/home/milax/SD/sd_p1/dynamic-scaling/InsultService/server.py", line 88, in <module>
+    daemon = Pyro4.Daemon(port=port)
+             ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/milax/SD/sd_p1/dynamic-scaling/venv/lib/python3.11/site-packages/Pyro4/core.py", line 1141, in __init__
+    self.transportServer.init(self, host, port, unixsocket)
+  File "/home/milax/SD/sd_p1/dynamic-scaling/venv/lib/python3.11/site-packages/Pyro4/socketserver/threadpoolserver.py", line 129, in init
+    self.sock = socketutil.createSocket(bind=bind_location,
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/milax/SD/sd_p1/dynamic-scaling/venv/lib/python3.11/site-packages/Pyro4/socketutil.py", line 300, in createSocket
+    sock.bind(bind)
+OSError: [Errno 98] Address already in use
+Insult service running at port 49155 with name InsultService_3
+[Consumer] Process started
+Connecting to RabbitMQ...
+Connection established.
+Queue declared: insult_queue
+[READY] Waiting for messages...
+Insult service running at port 49155 with name InsultService_3
+Traceback (most recent call last):
+  File "/home/milax/SD/sd_p1/dynamic-scaling/InsultService/server.py", line 88, in <module>
+    daemon = Pyro4.Daemon(port=port)
+             ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/milax/SD/sd_p1/dynamic-scaling/venv/lib/python3.11/site-packages/Pyro4/core.py", line 1141, in __init__
+    self.transportServer.init(self, host, port, unixsocket)
+  File "/home/milax/SD/sd_p1/dynamic-scaling/venv/lib/python3.11/site-packages/Pyro4/socketserver/threadpoolserver.py", line 129, in init
+    self.sock = socketutil.createSocket(bind=bind_location,
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/milax/SD/sd_p1/dynamic-scaling/venv/lib/python3.11/site-packages/Pyro4/socketutil.py", line 300, in createSocket
+    sock.bind(bind)
+OSError: [Errno 98] Address already in use
+Insult service running at port 49155 with name InsultService_3
+[Consumer] Process started
+Connecting to RabbitMQ...
+Connection established.
+Queue declared: insult_queue
+[READY] Waiting for messages...
+Insult service running at port 49155 with name InsultService_3
+Traceback (most recent call last):
+  File "/home/milax/SD/sd_p1/dynamic-scaling/InsultService/server.py", line 88, in <module>
+    daemon = Pyro4.Daemon(port=port)
+             ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/milax/SD/sd_p1/dynamic-scaling/venv/lib/python3.11/site-packages/Pyro4/core.py", line 1141, in __init__
+    self.transportServer.init(self, host, port, unixsocket)
+  File "/home/milax/SD/sd_p1/dynamic-scaling/venv/lib/python3.11/site-packages/Pyro4/socketserver/threadpoolserver.py", line 129, in init
+    self.sock = socketutil.createSocket(bind=bind_location,
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/milax/SD/sd_p1/dynamic-scaling/venv/lib/python3.11/site-packages/Pyro4/socketutil.py", line 300, in createSocket
+    sock.bind(bind)
+OSError: [Errno 98] Address already in use
+Insult service running at port 49155 with name InsultService_3
+[Consumer] Process started
+Connecting to RabbitMQ...
+Connection established.
+Queue declared: insult_queue
+[READY] Waiting for messages...
+Insult service running at port 49155 with name InsultService_3
+Traceback (most recent call last):
+  File "/home/milax/SD/sd_p1/dynamic-scaling/InsultService/server.py", line 88, in <module>
+    daemon = Pyro4.Daemon(port=port)
+             ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/milax/SD/sd_p1/dynamic-scaling/venv/lib/python3.11/site-packages/Pyro4/core.py", line 1141, in __init__
+    self.transportServer.init(self, host, port, unixsocket)
+  File "/home/milax/SD/sd_p1/dynamic-scaling/venv/lib/python3.11/site-packages/Pyro4/socketserver/threadpoolserver.py", line 129, in init
+    self.sock = socketutil.createSocket(bind=bind_location,
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/milax/SD/sd_p1/dynamic-scaling/venv/lib/python3.11/site-packages/Pyro4/socketutil.py", line 300, in createSocket
+    sock.bind(bind)
+OSError: [Errno 98] Address already in use
+Insult service running at port 49155 with name InsultService_3
+[Consumer] Process started
+Connecting to RabbitMQ...
+Connection established.
+Queue declared: insult_queue
+[READY] Waiting for messages...
+Insult service running at port 49155 with name InsultService_3
+[Consumer] Process started
+Connecting to RabbitMQ...
+Connection established.
+Queue declared: insult_queue
+[READY] Waiting for messages...
+Insult service running at port 49155 with name InsultService_3
+[Consumer] Process started
+Connecting to RabbitMQ...
+Connection established.
+Queue declared: insult_queue
+[READY] Waiting for messages...
+Insult service running at port 49155 with name InsultService_3
+Traceback (most recent call last):
+  File "/home/milax/SD/sd_p1/dynamic-scaling/InsultService/server.py", line 88, in <module>
+    daemon = Pyro4.Daemon(port=port)
+             ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/milax/SD/sd_p1/dynamic-scaling/venv/lib/python3.11/site-packages/Pyro4/core.py", line 1141, in __init__
+    self.transportServer.init(self, host, port, unixsocket)
+  File "/home/milax/SD/sd_p1/dynamic-scaling/venv/lib/python3.11/site-packages/Pyro4/socketserver/threadpoolserver.py", line 129, in init
+    self.sock = socketutil.createSocket(bind=bind_location,
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/milax/SD/sd_p1/dynamic-scaling/venv/lib/python3.11/site-packages/Pyro4/socketutil.py", line 300, in createSocket
+    sock.bind(bind)
+OSError: [Errno 98] Address already in use
+Insult service running at port 49155 with name InsultService_3
+[Consumer] Process started
+Connecting to RabbitMQ...
+Connection established.
+Queue declared: insult_queue
+[READY] Waiting for messages...
+Insult service running at port 49155 with name InsultService_3
+[Consumer] Process started
+Connecting to RabbitMQ...
+Connection established.
+Queue declared: insult_queue
+[READY] Waiting for messages...
+Insult service running at port 49155 with name InsultService_3
+[Consumer] Process started
+Connecting to RabbitMQ...
+Connection established.
+Queue declared: insult_queue
+[READY] Waiting for messages...
+Insult service running at port 49155 with name InsultService_3
+Traceback (most recent call last):
+  File "/home/milax/SD/sd_p1/dynamic-scaling/InsultService/server.py", line 88, in <module>
+    daemon = Pyro4.Daemon(port=port)
+             ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/milax/SD/sd_p1/dynamic-scaling/venv/lib/python3.11/site-packages/Pyro4/core.py", line 1141, in __init__
+    self.transportServer.init(self, host, port, unixsocket)
+  File "/home/milax/SD/sd_p1/dynamic-scaling/venv/lib/python3.11/site-packages/Pyro4/socketserver/threadpoolserver.py", line 129, in init
+    self.sock = socketutil.createSocket(bind=bind_location,
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/milax/SD/sd_p1/dynamic-scaling/venv/lib/python3.11/site-packages/Pyro4/socketutil.py", line 300, in createSocket
+    sock.bind(bind)
+OSError: [Errno 98] Address already in use
+Insult service running at port 49155 with name InsultService_3
+[Consumer] Process started
+Connecting to RabbitMQ...
+Connection established.
+Queue declared: insult_queue
+[READY] Waiting for messages...
+Insult service running at port 49155 with name InsultService_3
+Traceback (most recent call last):
+  File "/home/milax/SD/sd_p1/dynamic-scaling/InsultService/server.py", line 88, in <module>
+    daemon = Pyro4.Daemon(port=port)
+             ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/milax/SD/sd_p1/dynamic-scaling/venv/lib/python3.11/site-packages/Pyro4/core.py", line 1141, in __init__
+    self.transportServer.init(self, host, port, unixsocket)
+  File "/home/milax/SD/sd_p1/dynamic-scaling/venv/lib/python3.11/site-packages/Pyro4/socketserver/threadpoolserver.py", line 129, in init
+    self.sock = socketutil.createSocket(bind=bind_location,
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/milax/SD/sd_p1/dynamic-scaling/venv/lib/python3.11/site-packages/Pyro4/socketutil.py", line 300, in createSocket
+    sock.bind(bind)
+OSError: [Errno 98] Address already in use

@@ -18,7 +18,7 @@ TEXT_PORT_BASE = 50152
 
 MAX_NODES = 16
 MIN_NODES = 1
-SCALE_INTERVAL = 5  # segundos
+SCALE_INTERVAL = 1  # segundos
 SCALE_UP_THRESHOLD = 300
 SCALE_DOWN_THRESHOLD = 10
 
@@ -38,28 +38,44 @@ running_insult_nodes = []  # lista de procesos (Popen)
 running_filter_nodes = []
 
 def generate_graph():
-	time = [i * 5 for i in range(len(insult_filter_service_backlog))]
+	time = [i * 5 for i in range(len(insult_service_backlog))]
 
-	# Create the plot
-	plt.figure(figsize=(10, 6))
+	# Create the figure and axis objects
+	fig, ax1 = plt.subplots(figsize=(10, 6))
 
-	# Plot petitions
-	plt.plot(time, insult_filter_service_backlog, label='Petitions', marker='o', color='blue')
+	# Plotting current_petitions on the left y-axis
+	line1, = ax1.plot(time, insult_service_backlog, 'g-', label='Current Petitions')
+	ax1.set_xlabel('Time (seconds)')
+	ax1.set_ylabel('Current Petitions', color='g')
+	ax1.tick_params(axis='y', labelcolor='g')
 
-	# Plot nodes
-	plt.plot(time, insult_filter_service_current_nodes, label='Nodes Deployed', marker='s', color='green')
+	ax2 = ax1.twinx()
+	line2, = ax2.plot(time, insult_service_current_nodes, 'b-', label='Current Nodes')
+	ax2.set_ylabel('Nodes', color='b')
+	ax2.tick_params(axis='y', labelcolor='b')
 
-	# Add titles and labels
-	plt.title('Petitions and Nodes Deployed Over Time')
-	plt.xlabel('Time (seconds)')
-	plt.ylabel('Count')
-	plt.legend()
-	plt.grid(True)
+	ax3 = ax1.twinx()
+	ax3.spines['right'].set_position(('outward', 60))  # offset in pixels
+	line3, = ax3.plot(time, insult_service_desired_nodes, 'r--', label='Theoretical Nodes')
+	ax3.set_ylabel('Theoretical Nodes', color='r')
+	ax3.tick_params(axis='y', labelcolor='r')
+
+	lines = [line1, line2, line3]
+	labels = [line.get_label() for line in lines]
+	ax1.legend(lines, labels, loc='upper left')
+
+	# Add a title and grid
+	plt.title('Autoscaler Overview: Petitions and Nodes over Time')
+	ax1.grid(True)
+
+	# Improve layout
+	fig.tight_layout()
+
+	plt.savefig("autoscaler_graph.png", dpi=300)  # Change filename/format as needed
 
 	# Show the plot
-	plt.savefig('graph.png', dpi=300)  # You can change the filename and format
-
 	plt.show()
+
 
 def cleanup(signum, frame):
 	print(f"Received signal {signum}. Cleaning up child processes...")
@@ -127,12 +143,12 @@ def scale_down(service_type, node_list):
 insult_arrival_rate = 1
 filter_arrival_rate = 1
 INSULT_CAPACITY = 487.80
-INSULT_AVERAGE_TIME = 0.00205
+INSULT_AVERAGE_TIME = 0.001
 
 def dynamic_scaling_insult():
 	backlog = get_queue_backlog(INSULT_QUEUE)
 
-	# TODO: add backlog, suposed number of nodes to deploy and current number of nodes deployed
+	# add backlog, suposed number of nodes to deploy and current number of nodes deployed
 	# into an array and each position is a SCALE_INTERVAL
 
 	insult_service_backlog.append(backlog)
@@ -183,26 +199,34 @@ scale_up(INSULT_NODE, running_insult_nodes, INSULT_PORT_BASE)
 scale_up(FILTER_NODE, running_filter_nodes, TEXT_PORT_BASE)
 
 while True:
-	insult_nodes = dynamic_scaling_insult()
-	print (f"Insult nodes: {insult_nodes} decided by dynamic scaling, and {current_insult_nodes}")
+	desired_insult_nodes = dynamic_scaling_insult()
+	print (f"Insult nodes: {desired_insult_nodes} decided by dynamic scaling, and {current_insult_nodes}")
 
-	if insult_nodes > current_insult_nodes:
-		for i in range(insult_nodes - current_insult_nodes):
+	if desired_insult_nodes > MAX_NODES:
+		desired_insult_nodes = MAX_NODES
+	
+	if desired_insult_nodes > current_insult_nodes:
+		for i in range(desired_insult_nodes - current_insult_nodes):
 			scale_up(INSULT_NODE, running_insult_nodes, INSULT_PORT_BASE)
-	elif insult_nodes < current_insult_nodes:
-		for i in range(current_insult_nodes - insult_nodes):
+	elif desired_insult_nodes < current_insult_nodes:
+		for i in range(current_insult_nodes - desired_insult_nodes):
 			scale_down(INSULT_NODE, running_insult_nodes)
-	current_insult_nodes = insult_nodes
 
-	filter_nodes = dynamic_scaling_filter()
-	print (f"Insult nodes: {filter_nodes} decided by dynamic scaling, and {current_filter_nodes}")
+	current_insult_nodes = desired_insult_nodes
 
-	if filter_nodes > current_filter_nodes:
-		for i in range(filter_nodes - current_filter_nodes):
+	desired_filter_nodes = dynamic_scaling_filter()
+	print (f"Insult nodes: {desired_filter_nodes} decided by dynamic scaling, and {current_filter_nodes}")
+
+	if desired_filter_nodes > MAX_NODES:
+		desired_filter_nodes = MAX_NODES
+
+	if desired_filter_nodes > current_filter_nodes:
+		for i in range(desired_filter_nodes - current_filter_nodes):
 			scale_up(INSULT_NODE, running_filter_nodes, INSULT_PORT_BASE)
-	elif filter_nodes < current_filter_nodes:
-		for i in range(current_filter_nodes - filter_nodes):
+	elif desired_filter_nodes < current_filter_nodes:
+		for i in range(current_filter_nodes - desired_filter_nodes):
 			scale_down(INSULT_NODE, running_filter_nodes)
-	current_filter_nodes = filter_nodes
+	
+	current_filter_nodes = desired_filter_nodes
 
 	time.sleep(SCALE_INTERVAL)

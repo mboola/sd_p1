@@ -34,15 +34,17 @@ sleep 3
 
 # Then we deploy the autoscaler
 gnome-terminal --title="Autoscaler" -- bash -c "python3 autoscaler.py" &
-autoscaler=$(echo $!)
+autoscaler=$(ps -aux | grep autoscaler.py | grep -v grep | awk '{print $2}')
 
 sleep 3
 
 # Here we must execute clients
 gnome-terminal --title="Client" -- bash -c "python3 InsultService/client.py 10000 > time_client"
 
+./obtain_metrics.sh
+echo "metrics ended"
 
-sleep 100
+sleep 10
 wait $autoscaler
 
 kill $name_server
