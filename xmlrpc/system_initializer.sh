@@ -12,8 +12,8 @@ nodes=$1
 petitions=$2
 threads=$3
 
-if ! [[ "$nodes" =~ ^[0-9]+$ ]] || [ "$nodes" -lt 1 ] || [ "$nodes" -gt 4 ]; then
-	echo "Error: Nodes must be an integer between 1 and 4"
+if ! [[ "$nodes" =~ ^[0-9]+$ ]] || [ "$nodes" -lt 1 ] || [ "$nodes" -gt 8 ]; then
+	echo "Error: Nodes must be an integer between 1 and 8"
 	exit 1
 fi
 
@@ -87,7 +87,7 @@ event_subscriber2=$(echo $!)
 sleep 1
 
 # Start nodes of Insult Service
-insult_port=8016
+insult_port=8112
 insult_pids=()
 
 for ((i=0; i<$nodes; i++)); do
