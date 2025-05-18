@@ -19,8 +19,6 @@ TEXT_PORT_BASE = 50152
 MAX_NODES = 16
 MIN_NODES = 1
 SCALE_INTERVAL = 1  # segundos
-SCALE_UP_THRESHOLD = 300
-SCALE_DOWN_THRESHOLD = 10
 
 # Structs used to store values to generate graph
 insult_service_backlog = []
@@ -54,7 +52,7 @@ def generate_graph(backlog, current_nodes, desired_nodes, name_file):
 	ax2.set_ylabel('Nodes', color='b')
 	ax2.tick_params(axis='y', labelcolor='b')
 
-	ax2.set_ylim(0, 36)
+	ax2.set_ylim(0, 32)
 
 	ax3 = ax1.twinx()
 	ax3.spines['right'].set_position(('outward', 60))  # offset in pixels
@@ -92,8 +90,8 @@ def cleanup(signum, frame):
 		except Exception as e:
 			print(f"Failed to terminate child: {e}")
 
-	generate_graph(insult_service_backlog, insult_service_current_nodes, insult_service_desired_nodes, "insult_service")
-	generate_graph(insult_filter_service_backlog, insult_filter_service_current_nodes, insult_filter_service_desired_nodes, "insult_filter_service")
+	generate_graph(insult_service_backlog, insult_service_current_nodes, insult_service_desired_nodes, "graphs/insult_service")
+	generate_graph(insult_filter_service_backlog, insult_filter_service_current_nodes, insult_filter_service_desired_nodes, "graphs/insult_filter_service")
 	sys.exit(0)
     
 signal.signal(signal.SIGINT, cleanup)  # Optional: handle Ctrl+C too
@@ -143,9 +141,9 @@ def scale_down(service_type, node_list):
 
 insult_arrival_rate = 1
 filter_arrival_rate = 1
-INSULT_CAPACITY = 487.80
-INSULT_AVERAGE_TIME = 0.001
-TEXT_CAPACITY = 149
+INSULT_CAPACITY = 500
+INSULT_AVERAGE_TIME = 0.002
+TEXT_CAPACITY = 130
 TEXT_AVERAGE_TIME = 0.0067
 
 def dynamic_scaling_insult():
@@ -166,7 +164,7 @@ def dynamic_scaling_insult():
 def dynamic_scaling_filter():
 	backlog = get_queue_backlog(TEXT_QUEUE)
 
-	# TODO: add backlog, suposed number of nodes to deploy and current number of nodes deployed
+	# add backlog, suposed number of nodes to deploy and current number of nodes deployed
 	# into an array and each position is a SCALE_INTERVAL
 
 	insult_filter_service_backlog.append(backlog)
@@ -215,7 +213,7 @@ while True:
 	current_insult_nodes = desired_insult_nodes
 
 	desired_filter_nodes = dynamic_scaling_filter()
-	print (f"Insult nodes: {desired_filter_nodes} decided by dynamic scaling, and {current_filter_nodes}")
+	print (f"Filter nodes: {desired_filter_nodes} decided by dynamic scaling, and {current_filter_nodes}")
 
 	if desired_filter_nodes > MAX_NODES:
 		desired_filter_nodes = MAX_NODES

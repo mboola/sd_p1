@@ -5,6 +5,9 @@ source venv/bin/activate
 pip install redis
 pip install pika
 
+rm -rf graphs
+mkdir graphs
+
 # First we deploy redis
 sudo docker run --name InsultRedis -d -p 6379:6379 redis
 
@@ -34,19 +37,27 @@ sleep 3
 
 # Then we deploy the autoscaler
 gnome-terminal --title="Autoscaler" -- bash -c "python3 autoscaler.py" &
+sleep 1
 autoscaler=$(ps -aux | grep autoscaler.py | grep -v grep | awk '{print $2}')
+
+echo "Autoscaler is "$autoscaler
 
 sleep 3
 
 # Here we must execute clients
-./obtain_metrics.sh "InsultService/client.py"
+./InsultServicePetitions.sh "InsultService/client.py"
 echo "InsultService/client.py metrics ended"
 
-./obtain_metrics.sh "InsultFilterService/client.py"
+./InsultFilterPetitions.sh "InsultFilterService/client.py"
 echo "InsultFilterService/client.py metrics ended"
+
+echo "Waiting for petitions to get processed!!"
+sleep 20
+
+echo "Kill autoscaler!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
 sleep 10
 
-wait $autoscaler
+kill $autoscaler
 
 kill $name_server
 #kill $redis_observer
