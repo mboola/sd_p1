@@ -65,7 +65,8 @@ def main():
         processes.append(launch("Test InsultFilterService", f"python3 {BASE_DIR}/tests/test_InsultFilterService.py {number_petitions_text}"))
 
         print("\n Todos los procesos han sido lanzados.")
-        print(" Pulsa Ctrl+C para detener manualmente.")
+        print(" Pulsa Ctrl+C para detener manualmente, o espera 300 segundos para que se detengan automáticamente...")
+        time.sleep(300)
         os.kill(os.getpid(), signal.SIGINT)
         while True:
             time.sleep(1)

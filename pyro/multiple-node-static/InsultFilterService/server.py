@@ -37,21 +37,25 @@ class InsultFilterService:
             input_texts = [input_texts]
 
         resultados = []
+
         for text in input_texts:
             text = text.lower()
             filtered = self.filter_text(text)
-            valores = self.r.hvals("filtered_texts")
-            ya_existente = any(filtered == v.split("|")[0] for v in valores)
+
+            # Verificación más rápida usando un set
+            ya_existente = self.r.sismember("filtered_texts_set", filtered)
 
             if not ya_existente:
                 timestamp = datetime.now(timezone.utc).isoformat()
                 next_id = self.r.incr("filtered_texts_id")
                 self.r.hset("filtered_texts", next_id, f"{filtered}|{timestamp}")
+                self.r.sadd("filtered_texts_set", filtered)  # Se guarda en el set
                 logging.info(f"Texto filtrado añadido: {filtered}")
                 resultados.append(f"Texto registrado: {filtered} (UTC: {timestamp})")
             else:
                 logging.info(f"Texto ya registrado: {filtered}")
                 resultados.append(f"Texto ya registrado: {filtered}")
+
         return resultados
 
 
