@@ -4,6 +4,10 @@ import time
 import redis
 import json
 
+# IMPORTANT:!!!!!!
+# this only executes once bc AWS Lambda does not like line 75
+# so it just executes once.
+
 # Insert here the IP of the EC2 instance
 ec2_ip = '54.165.250.164'
 INSULT_QUEUE = "insult_queue"
@@ -11,7 +15,7 @@ END_PETITION_QUEUE = "end_petition_queue_"
 
 def create_connection():
 	credentials = pika.PlainCredentials('user', 'password123')
-	connection = pika.BlockingConnection(
+	return pika.BlockingConnection(
 		pika.ConnectionParameters(
 			host=ec2_ip,
 			credentials=credentials
@@ -30,7 +34,7 @@ def wait_for_stop_signal(stop_event, lambda_id):
 
 	connection = create_connection()
 	channel = connection.channel()
-	channel.queue_declare(queue=queue, durable=True)
+	channel.queue_declare(queue=queue)
 
 	channel.basic_consume(
 		queue=queue,
@@ -44,7 +48,7 @@ def wait_for_stop_signal(stop_event, lambda_id):
 def consume_insults(stop_event, redis_server):
 	connection = create_connection()
 	channel = connection.channel()
-	channel.queue_declare(queue=INSULT_QUEUE, durable=True)
+	channel.queue_declare(queue=INSULT_QUEUE)
 
 	# Wrap callback to include stop_event
 	def on_message(ch, method, properties, body):
@@ -58,8 +62,10 @@ def consume_insults(stop_event, redis_server):
 		print("Processing order:", order)
 	
 		insult = order.get('insult')
+		print(insult)
 
 		# Add insult to redis if not there
+		print(f"Redis server: {redis_server}")
 		if not redis_server.sismember("insults", insult):
 			redis_server.sadd("insults", insult)
 		if stop_event.is_set():
@@ -81,7 +87,7 @@ def lambda_handler(event, context):
 
 	# Thread that waits if the lambda needs to be scaled down
 	stop_event = threading.Event()
-	threading.Thread(target=wait_for_stop_signal, args=(stop_event, lambda_id,)).start()
+	#threading.Thread(target=wait_for_stop_signal, args=(stop_event, lambda_id,)).start()
 
 	consume_insults(stop_event, redis_server)
 
