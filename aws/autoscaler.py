@@ -4,7 +4,8 @@ import time
 import signal
 import threading
 import boto3
-import graph as generate_graph
+import json
+import graph
 
 # RabbitMQ queue names
 INSULT_QUEUE = "insult_queue"
@@ -17,7 +18,7 @@ SCALE_INTERVAL = 1
 
 # Lambdas running
 INSULT_NODE = "lambda_insult_service"
-FILTER_NODE = ""
+FILTER_NODE = "lambda_filter_service"
 END_PETITION_QUEUE = "end_petition_queue_"
 LAMBDA_PULSE_INTERVAL = 30
 
@@ -69,8 +70,8 @@ def dynamic_scaling_filter():
 	return desired_nodes
 
 def create_graphs(signum, frame):
-	generate_graph(insult_service_backlog, insult_service_current_nodes, insult_service_desired_nodes, "graphs/insult_service")
-	generate_graph(insult_filter_service_backlog, insult_filter_service_current_nodes, insult_filter_service_desired_nodes, "graphs/insult_filter_service")
+	graph.generate_graph(insult_service_backlog, insult_service_current_nodes, insult_service_desired_nodes, "graphs/insult_service")
+	graph.generate_graph(insult_filter_service_backlog, insult_filter_service_current_nodes, insult_filter_service_desired_nodes, "graphs/insult_filter_service")
 
 # With ctrl+Z from terminal a graph gets generated
 signal.signal(signal.SIGTSTP, create_graphs)
@@ -115,7 +116,7 @@ def scale_up(service_type, current_nodes):
 	if current_nodes >= MAX_NODES:
 		return MAX_NODES
 
-	lambda_client = boto3.client('lambda', region_name='us_east-1')
+	lambda_client = boto3.client('lambda', region_name='us-east-1')
 	try:
 		response = lambda_client.invoke(
 			FunctionName=service_type,
