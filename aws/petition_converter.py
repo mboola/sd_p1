@@ -7,7 +7,7 @@ from urllib.parse import unquote
 from botocore.exceptions import ClientError
 
 # Insert here the IP of the EC2 instance
-ec2_ip = '3.88.232.100'
+ec2_ip = '54.165.250.164'
 
 # RabbitMQ queue names
 INSULT_QUEUE = "insult_queue"
@@ -54,9 +54,12 @@ def lambda_handler(event, context):
 		channel = connection.channel()
 		channel.queue_declare(queue=INSULT_QUEUE)
 		channel.queue_declare(queue=TEXT_QUEUE)
+
+		print("Connected to RabbitMQ")
 		
 		# Process each order in the CSV and publish to RabbitMQ
 		for row in reader:
+			print("Processing row:", row)
 			service_id = row.get('ServiceID')
 			if service_id == '1':
 				# Add text to insults rabbitmq
