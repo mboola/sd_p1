@@ -1,5 +1,3 @@
-#python3 launcher.py <number_insult_services> <number_filter_services> <number_insults> <number_texts_to_filter>
-
 import subprocess
 import time
 import os
@@ -10,7 +8,12 @@ BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 
 def launch(name, command, wait_time=1):
     print(f"🚀 Launching: {name}")
-    process = subprocess.Popen(command, shell=True)
+    process = subprocess.Popen(
+        command,
+        shell=True,
+        stdout=sys.stdout,            # Muestra salida normal
+        stderr=subprocess.DEVNULL     # Oculta warnings/errores
+    )
     time.sleep(wait_time)
     return process
 
@@ -42,20 +45,14 @@ def main():
         processes.append(launch("Notifier", f"python3 {BASE_DIR}/Notifier/notifier.py"))
         processes.append(launch("Subscriber", f"python3 {BASE_DIR}/Notifier/subscriber.py"))
 
-        # 6. RabbitMQ clients (to send messages)
-        #processes.append(launch("Client RabbitMQ - Insults", f"python3 {BASE_DIR}/InsultService/client.py"))
-        #processes.append(launch("Client RabbitMQ - Texts", f"python3 {BASE_DIR}/InsultFilterService/client.py"))
-
         # 7. Tests
         processes.append(launch("Test RabbitMQ - Insults", f"python3 {BASE_DIR}/InsultService/test_insultService.py {number_insult_services} {number_filter_services} {number_petitions_insult} {number_petitions_text}"))
         processes.append(launch("Test RabbitMQ - Texts", f"python3 {BASE_DIR}/InsultFilterService/test_insultFilterService.py {number_insult_services} {number_filter_services} {number_petitions_insult} {number_petitions_text}"))
-        
+
         os.system('clear')
         print(" OK All services are running.")
         print(" Press Ctrl+C to stop everything.")
 
-        #os.kill(os.getpid(), signal.SIGINT)
-        
         while True:
             time.sleep(1)
 

@@ -21,6 +21,7 @@ def add_insult(insult_or_list, redis_conn):
         insult = insult.lower()
         if not redis_conn.sismember("insults", insult):
             redis_conn.sadd("insults", insult)
+            redis_conn.publish("insults_channel", insult)  # <- 🔔 Notifica por pub/sub
             logging.info(f"Insult added: {insult}")
         else:
             logging.info(f"Insult already exists: {insult}")
