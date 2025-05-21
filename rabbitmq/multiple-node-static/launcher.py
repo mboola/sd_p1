@@ -5,8 +5,6 @@ import time
 import os
 import redis
 import sys
-import Pyro4
-import signal
 
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 
@@ -25,34 +23,24 @@ def main():
         number_petitions_insult = int(sys.argv[3])
         number_petitions_text = int(sys.argv[4])
 
-        # 0. Name Server
-        processes.append(launch("NameServer", "pyro4-ns"))
-
         # 1. Redis
         processes.append(launch("Redis", f"python3 {BASE_DIR}/RedisServer/RedisServer.py"))
 
-        # 2. RabbitMQ (optional - you can skip this if running as a service)
-        # processes.append(launch("RabbitMQ", "rabbitmq-server"))
-
-        # 3. Multiple InsultService instances
-        base_port_insult = 49152
+        # 2. Multiple InsultService instances
         for i in range(number_insult_services):
-            port = base_port_insult + i
             name = f"InsultService_{i}"
-            cmd = f"python3 {BASE_DIR}/InsultService/server.py {port} {name}"
+            cmd = f"python3 {BASE_DIR}/InsultService/server_rabbitmq.py"
             processes.append(launch(name, cmd))
 
-        # 4. Multiple InsultFilterService instances
-        base_port_filter = 50152
+        # 3. Multiple InsultFilterService instances
         for i in range(number_filter_services):
-            port = base_port_filter + i
             name = f"InsultFilterService_{i}"
-            cmd = f"python3 {BASE_DIR}/InsultFilterService/server.py {port} {name}"
+            cmd = f"python3 {BASE_DIR}/InsultFilterService/server_rabbitmq.py"
             processes.append(launch(name, cmd))
 
         # 5. Notifier and Subscriber
-        processes.append(launch("Notifier", f"python3 {BASE_DIR}/Notifier/notifier.py"))
-        processes.append(launch("Subscriber", f"python3 {BASE_DIR}/Notifier/subscriber.py"))
+        processes.append(launch("Notifier", f"python3 {BASE_DIR}/Notifier/notifier_rabbitmq.py"))
+        processes.append(launch("Subscriber", f"python3 {BASE_DIR}/Notifier/subscriber_rabbitmq.py"))
 
         # 6. RabbitMQ clients (to send messages)
         #processes.append(launch("Client RabbitMQ - Insults", f"python3 {BASE_DIR}/InsultService/client.py"))
@@ -61,9 +49,10 @@ def main():
         # 7. Tests
         processes.append(launch("Test RabbitMQ - Insults", f"python3 {BASE_DIR}/InsultService/test_insultService.py {number_insult_services} {number_filter_services} {number_petitions_insult} {number_petitions_text}"))
         processes.append(launch("Test RabbitMQ - Texts", f"python3 {BASE_DIR}/InsultFilterService/test_insultFilterService.py {number_insult_services} {number_filter_services} {number_petitions_insult} {number_petitions_text}"))
-
-        print("✅ All services are running.")
-        print("🛑 Press Ctrl+C to stop everything.")
+        
+        os.system('clear')
+        print(" OK All services are running.")
+        print(" Press Ctrl+C to stop everything.")
 
         #os.kill(os.getpid(), signal.SIGINT)
         
@@ -74,9 +63,6 @@ def main():
         print("🧹 Stopping all processes...")
         for p in processes:
             p.terminate()
-
-        print("🧹 Killing NameServer...")
-        subprocess.call("pkill -f pyro4-ns", shell=True)
 
         print("🧹 Cleaning Redis keys...")
         try:
@@ -92,16 +78,6 @@ def main():
             print(f"🗑️ filtered_texts_id removed: {text_id}")
         except Exception as e:
             print(f"⚠️ Redis clean-up error: {e}")
-
-        print("👋 Trying to stop Notifier broadcasting...")
-        try:
-            ns = Pyro4.locateNS()
-            notifier_uri = ns.lookup("Notifier")
-            notifier = Pyro4.Proxy(notifier_uri)
-            notifier.stop_broadcast()
-            print("🚫 Notifier broadcasting process stopped.")
-        except Exception as e:
-            print(f"⚠️ Could not stop Notifier: {e}")
 
         print("👋 Done.")
 

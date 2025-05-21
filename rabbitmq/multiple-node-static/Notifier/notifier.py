@@ -1,79 +1,39 @@
-import Pyro4
+import pika
 import redis
 import time
 import random
+import json
 import logging
-from multiprocessing import Process, Manager
 
 logging.basicConfig(
     level=logging.INFO,
-    format="%(asctime)s [%(levelname)s] %(message)s"
+    format="%(asctime)s [%(levelname)s] %(message)s",
+    handlers=[
+        logging.FileHandler("notifier_rabbitmq.log", mode="a"),
+        logging.StreamHandler()
+    ]
 )
 
-broadcast_process = None
-
-@Pyro4.behavior(instance_mode="single")
-class Notifier:
-    def __init__(self, subscribers):
-        self.r = redis.Redis(host='localhost', port=6379, decode_responses=True)
-        self.subscribers = subscribers  # ← lista compartida
-
-    @Pyro4.expose
-    def subscribe(self, subscriber_uri):
-        if subscriber_uri not in self.subscribers:
-            self.subscribers.append(subscriber_uri)
-            logging.info(f" Suscriptor añadido: {subscriber_uri}")
-        else:
-            logging.info("Suscriptor ya existente")
-
-    @Pyro4.expose
-    def unsubscribe(self, subscriber_uri):
-        if subscriber_uri in self.subscribers:
-            self.subscribers.remove(subscriber_uri)
-            logging.info(f" Suscriptor eliminado: {subscriber_uri}")
-
-    @Pyro4.expose
-    def stop_broadcast(self):
-        global broadcast_process
-        if broadcast_process:
-            broadcast_process.terminate()
-            logging.info("Proceso de broadcasting detenido")
-
-def broadcast_loop(subscribers):
+def broadcast_loop():
     r = redis.Redis(host='localhost', port=6379, decode_responses=True)
+    
+    credentials = pika.PlainCredentials("ar", "sar")
+    parameters = pika.ConnectionParameters("localhost", credentials=credentials)
+    connection = pika.BlockingConnection(parameters)
+    channel = connection.channel()
+
+    channel.exchange_declare(exchange="insult_broadcast", exchange_type="fanout")
+
     while True:
         insults = list(r.smembers("insults"))
         if not insults:
-            logging.info(" No hay insultos disponibles.")
-        elif not subscribers:
-            logging.info(" No hay suscriptores registrados.")
+            logging.info("No hay insultos disponibles.")
         else:
             insult = random.choice(insults)
-            for uri in list(subscribers):  # usar copia por seguridad
-                try:
-                    proxy = Pyro4.Proxy(uri)
-                    proxy.update(insult)
-                    logging.info(f" Enviado a: {uri}")
-                except Exception as e:
-                    logging.warning(f" Error al enviar a {uri}: {e}")
+            message = json.dumps({"insult": insult})
+            channel.basic_publish(exchange="insult_broadcast", routing_key="", body=message)
+            logging.info(f"Enviado broadcast: {insult}")
         time.sleep(5)
 
-def main():
-    global broadcast_process
-    with Manager() as manager:
-        subscribers = manager.list()
-
-        obj = Notifier(subscribers)
-        daemon = Pyro4.Daemon(port=4719)
-        ns = Pyro4.locateNS()
-        uri = daemon.register(obj, objectId="Notifier")
-        ns.register("Notifier", uri)
-        logging.info(f"Notifier registrado en {uri}")
-
-        broadcast_process = Process(target=broadcast_loop, args=(subscribers,), daemon=False)
-        broadcast_process.start()
-
-        daemon.requestLoop()
-
 if __name__ == "__main__":
-    main()
+    broadcast_loop()

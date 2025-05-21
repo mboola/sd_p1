@@ -1,26 +1,27 @@
-import Pyro4
-from observer import Observer
-
-class Subscriber(Observer):
-    @Pyro4.expose
-    def update(self, insult):   
-        print("Event: ", insult)
+import pika
+import json
 
 def main():
-    ns = Pyro4.locateNS()
-    daemon = Pyro4.Daemon()
-    notifier_server_uri = ns.lookup("Notifier")
-    print("Conectando al Notifier...")
-    notifier_server = Pyro4.Proxy(notifier_server_uri)
-    print("Conectado al Notifier.\n")
+    credentials = pika.PlainCredentials("ar", "sar")
+    parameters = pika.ConnectionParameters("localhost", credentials=credentials)
+    connection = pika.BlockingConnection(parameters)
+    channel = connection.channel()
 
-    subscriber = Subscriber()
-    subscriber_uri = daemon.register(subscriber)
+    channel.exchange_declare(exchange="insult_broadcast", exchange_type="fanout")
+    result = channel.queue_declare(queue="", exclusive=True)
+    queue_name = result.method.queue
 
-    notifier_server.subscribe(subscriber_uri)
-    print("Suscrito al Notifier. Esperando eventos...\n\n")
+    channel.queue_bind(exchange="insult_broadcast", queue=queue_name)
 
-    daemon.requestLoop()
+    print("[READY] Waiting for broadcast insults...")
+
+    def callback(ch, method, properties, body):
+        message = json.loads(body)
+        insult = message.get("insult", "[unknown]")
+        print("Event: ", insult)
+
+    channel.basic_consume(queue=queue_name, on_message_callback=callback, auto_ack=True)
+    channel.start_consuming()
 
 if __name__ == "__main__":
     main()
