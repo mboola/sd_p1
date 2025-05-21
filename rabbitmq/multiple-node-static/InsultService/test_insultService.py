@@ -49,7 +49,7 @@ def main():
     )
 
     print(results)
-    with open(f"results_rabbitmq_insult_{n_is}_{n_if}_{n_pis}_{n_pif}.txt", "w") as f:
+    with open(f"results_rabbitmq_insultservice_{n_is}_{n_if}_{n_pis}_{n_pif}.txt", "w") as f:
         f.write(results)
 
 if __name__ == "__main__":
