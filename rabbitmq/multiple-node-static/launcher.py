@@ -29,18 +29,18 @@ def main():
         # 2. Multiple InsultService instances
         for i in range(number_insult_services):
             name = f"InsultService_{i}"
-            cmd = f"python3 {BASE_DIR}/InsultService/server_rabbitmq.py"
+            cmd = f"python3 {BASE_DIR}/InsultService/server.py"
             processes.append(launch(name, cmd))
 
         # 3. Multiple InsultFilterService instances
         for i in range(number_filter_services):
             name = f"InsultFilterService_{i}"
-            cmd = f"python3 {BASE_DIR}/InsultFilterService/server_rabbitmq.py"
+            cmd = f"python3 {BASE_DIR}/InsultFilterService/server.py"
             processes.append(launch(name, cmd))
 
         # 5. Notifier and Subscriber
-        processes.append(launch("Notifier", f"python3 {BASE_DIR}/Notifier/notifier_rabbitmq.py"))
-        processes.append(launch("Subscriber", f"python3 {BASE_DIR}/Notifier/subscriber_rabbitmq.py"))
+        processes.append(launch("Notifier", f"python3 {BASE_DIR}/Notifier/notifier.py"))
+        processes.append(launch("Subscriber", f"python3 {BASE_DIR}/Notifier/subscriber.py"))
 
         # 6. RabbitMQ clients (to send messages)
         #processes.append(launch("Client RabbitMQ - Insults", f"python3 {BASE_DIR}/InsultService/client.py"))
