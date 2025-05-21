@@ -2,6 +2,7 @@ import redis
 import logging
 import json
 import pika
+import sys
 from datetime import datetime, timezone
 import traceback
 
@@ -80,5 +81,6 @@ class InsultFilterService:
             traceback.print_exc()
 
 if __name__ == "__main__":
-    service = InsultFilterService()
+    n_pif = int(sys.argv[1]) if len(sys.argv) > 1 else None
+    service = InsultFilterService(end_condition_target=n_pif)
     service.start_rabbitmq_consumer()

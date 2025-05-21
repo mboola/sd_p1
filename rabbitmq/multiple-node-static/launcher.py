@@ -38,7 +38,7 @@ def main():
         # 3. Multiple InsultFilterService instances
         for i in range(number_filter_services):
             name = f"InsultFilterService_{i}"
-            cmd = f"python3 {BASE_DIR}/InsultFilterService/server.py"
+            cmd = f"python3 {BASE_DIR}/InsultFilterService/server.py {number_petitions_text}"
             processes.append(launch(name, cmd))
 
         # 5. Notifier and Subscriber
