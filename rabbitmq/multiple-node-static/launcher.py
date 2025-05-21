@@ -10,9 +10,9 @@ def launch(name, command, wait_time=1):
     print(f"🚀 Launching: {name}")
     process = subprocess.Popen(
         command,
-        shell=True,
-        stdout=sys.stdout,            # Muestra salida normal
-        stderr=subprocess.DEVNULL     # Oculta warnings/errores
+        shell=True#,
+        #stdout=sys.stdout,            # Muestra salida normal
+        #stderr=subprocess.DEVNULL     # Oculta warnings/errores
     )
     time.sleep(wait_time)
     return process
