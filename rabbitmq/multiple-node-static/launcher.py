@@ -10,9 +10,9 @@ def launch(name, command, wait_time=1):
     print(f"🚀 Launching: {name}")
     process = subprocess.Popen(
         command,
-        shell=True#,
-        #stdout=sys.stdout,            # Muestra salida normal
-        #stderr=subprocess.DEVNULL     # Oculta warnings/errores
+        shell=True,
+        stdout=sys.stdout,            
+        stderr=subprocess.DEVNULL     
     )
     time.sleep(wait_time)
     return process
@@ -49,7 +49,7 @@ def main():
         processes.append(launch("Test RabbitMQ - Insults", f"python3 {BASE_DIR}/InsultService/test_insultService.py {number_insult_services} {number_filter_services} {number_petitions_insult} {number_petitions_text}"))
         processes.append(launch("Test RabbitMQ - Texts", f"python3 {BASE_DIR}/InsultFilterService/test_insultFilterService.py {number_insult_services} {number_filter_services} {number_petitions_insult} {number_petitions_text}"))
 
-        #os.system('clear')
+        os.system('clear')
         print(" OK All services are running.")
         print(" Press Ctrl+C to stop everything.")
 
