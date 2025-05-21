@@ -15,8 +15,9 @@ logging.basicConfig(
 )
 
 class InsultFilterService:
-    def __init__(self):
+    def __init__(self, end_condition_target=None):
         self.r = redis.Redis(host='localhost', port=6379, decode_responses=True)
+        self.end_condition_target = end_condition_target
 
     def get_insults_list(self):
         return self.r.smembers("insults")
@@ -24,10 +25,7 @@ class InsultFilterService:
     def filter_text(self, text):
         insults_set = self.get_insults_list()
         words = text.split()
-        censored = [
-            "CENSORED" if word.lower() in insults_set else word
-            for word in words
-        ]
+        censored = ["CENSORED" if word.lower() in insults_set else word for word in words]
         return " ".join(censored)
 
     def add_text(self, input_texts):
@@ -37,16 +35,17 @@ class InsultFilterService:
         for text in input_texts:
             text = text.lower()
             filtered = self.filter_text(text)
-            values = self.r.hvals("filtered_texts")
-            already_exists = any(filtered == v.split("|")[0] for v in values)
+            valores = self.r.hvals("filtered_texts")
+            ya_existente = any(filtered == v.split("|")[0] for v in valores)
 
-            if not already_exists:
+            if not ya_existente:
                 timestamp = datetime.now(timezone.utc).isoformat()
                 next_id = self.r.incr("filtered_texts_id")
                 self.r.hset("filtered_texts", next_id, f"{filtered}|{timestamp}")
-                logging.info(f"Filtered text added: {filtered}")
-            else:
-                logging.info(f"Filtered text already exists: {filtered}")
+
+                # Publicar si alcanzamos la condición de parada
+                if self.end_condition_target and next_id == self.end_condition_target:
+                    self.r.publish("end_condition_channel", "done")
 
     def start_rabbitmq_consumer(self):
         try:
