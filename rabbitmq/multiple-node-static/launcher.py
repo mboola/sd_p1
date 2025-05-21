@@ -32,7 +32,7 @@ def main():
         # 2. Multiple InsultService instances
         for i in range(number_insult_services):
             name = f"InsultService_{i}"
-            cmd = f"python3 {BASE_DIR}/InsultService/server.py"
+            cmd = f"python3 {BASE_DIR}/InsultService/server.py {number_petitions_insult}"
             processes.append(launch(name, cmd))
 
         # 3. Multiple InsultFilterService instances
@@ -49,7 +49,7 @@ def main():
         processes.append(launch("Test RabbitMQ - Insults", f"python3 {BASE_DIR}/InsultService/test_insultService.py {number_insult_services} {number_filter_services} {number_petitions_insult} {number_petitions_text}"))
         processes.append(launch("Test RabbitMQ - Texts", f"python3 {BASE_DIR}/InsultFilterService/test_insultFilterService.py {number_insult_services} {number_filter_services} {number_petitions_insult} {number_petitions_text}"))
 
-        os.system('clear')
+        #os.system('clear')
         print(" OK All services are running.")
         print(" Press Ctrl+C to stop everything.")
 

@@ -2,6 +2,7 @@ import redis
 import json
 import pika
 import logging
+import sys
 from datetime import datetime
 import traceback
 
@@ -63,7 +64,7 @@ class InsultService:
             traceback.print_exc()
 
 def main():
-    import sys
+    
     n_pis = int(sys.argv[1]) if len(sys.argv) > 1 else None
     service = InsultService(end_condition_target=n_pis)
     service.start()
