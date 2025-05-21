@@ -17,20 +17,6 @@ sudo docker run --name InsultRabbitmq -d -p 5672:5672 -p 15672:15672 rabbitmq:ma
 
 sleep 5
 
-#sudo docker exec InsultRabbitmq rabbitmqctl add_user ar sar
-sleep 1
-
-#sudo docker exec InsultRabbitmq rabbitmqctl set_permissions -p / ar ".*" ".*" ".*"
-
-sleep 1
-
-# Then we start NameServer
-python3 NameServer.py &
-name_server=$(echo $!)
-
-# Wait some time so server can start correctly
-sleep 3
-
 # We also deploy redis observer
 #python3 see_redis.py & 
 #redis_observer=$(echo $!)

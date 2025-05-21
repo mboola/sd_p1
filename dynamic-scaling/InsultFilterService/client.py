@@ -12,9 +12,6 @@ connection = pika.BlockingConnection(parameters)
 channel = connection.channel()
 channel.queue_declare(queue="text_queue", durable=True)
 
-if isinstance(text_list, str):
-    text_list = [text_list]
-
 for i in range(petitions):
     message = json.dumps({"text": text_list[i % 4]})
     channel.basic_publish(
