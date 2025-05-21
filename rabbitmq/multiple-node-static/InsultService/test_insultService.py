@@ -21,6 +21,7 @@ def main():
     channel.queue_declare(queue="insult_queue", durable=True)
 
     print(f"📤 Sending {n_pis} insults to insult_queue...")
+    start = time.time()
     for i in range(n_pis):
         insult = f"insult_{i}"
         message = json.dumps({"insult": insult})
@@ -32,7 +33,7 @@ def main():
         )
     connection.close()
 
-    start = time.time()
+    
     for message in pubsub.listen():
         if message['type'] == 'message':
             break
