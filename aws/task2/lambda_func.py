@@ -1,21 +1,20 @@
 import json
 
+insults = ["papanata", "soso", "burro"]
+
 def lambda_handler(event, context):
-    print("Evento recibido:", json.dumps(event))
-    insults = ["papanata", "soso", "burro"]
+    for record in event['Records']:
+        try:
+            text = json.loads(record['body']).get('text', '')
+            print(f"Procesando petición con datos: {text}")
 
-    # Asume que usas SQS trigger
-    for record in event.get("Records", []):
-        body = record["body"]
-        data = json.loads(body)
-        text = data.get('text', '')
-
-        for insult in insults:
-            text = text.replace(insult, "CENSORED")
-
-        print(f"Texto filtrado: {text}")
+            for insult in insults:
+                text = text.replace(insult, "CENSORED")
+            print(f"Texto filtrado: {text}")
+        except Exception as e:
+            print(f"Fallo rarete {e}")
 
     return {
         'statusCode': 200,
-        'body': json.dumps({'message': 'Procesado'})
+        'body': json.dumps('Hello from Lambda!')
     }
