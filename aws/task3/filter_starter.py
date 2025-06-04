@@ -21,19 +21,41 @@ def get_s3_files():
 	return file_list
 
 def map_filter_function(obj):
-	print(obj)
-	return 1
+
+	insults = ["bobo", "ridiculo", "tonto"]
+
+	data = obj.data_stream.read()
+	text = data.decode('utf-8')
+
+	print(text)
+
+	for insult in insults:
+		text = re.sub(insult, "CENSORED", text, flags=re.IGNORECASE)
+	count = text.count('CENSORED')
+	print(f"Count: {count}")
+
+	output = obj.key.split("/")[-1] 
+	tmp_file = f'/tmp/censored_{output}'
+
+	with open(tmp_file, 'w', encoding='utf-8') as fitxer_output:
+		fitxer_output.write(text)
+	
+	# Subir el archivo censurado a S3
+	boto3.client('s3').upload_file(
+		Filename=tmp_file,
+		Bucket=obj.bucket,
+		Key=f'censored_{output}'
+	)
+	return count
 
 def reduce_filter_function(results):
 	return sum(results)
 
-# Obtain files (path?)
 files = get_s3_files()
 for f in files:
 	print(f)
 
-#files = ['task3-marcel-bucket', 'task3-marcel-bucket', 'task3-marcel-bucket']
 with lithops.FunctionExecutor() as executor:
 	futures = executor.map_reduce(map_filter_function, files, reduce_filter_function)
 	results = executor.get_result(futures)
-	print(f'insults censurats: {results}')
+	print(f'Insults censurats: {results}')
